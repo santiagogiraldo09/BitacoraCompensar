@@ -1,0 +1,289 @@
+/* General styles */
+body {
+    margin: 0;
+    padding: 30px;
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#app {
+    width: 100%;
+    max-width: 400px; /* Mantener el tamaño para simular un celular */
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: white;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#logo-container {
+    margin-bottom: 10px;
+}
+
+#logo {
+    max-width: 180px;
+    height: auto;
+    display: block;
+    margin: 20px auto 10px auto;
+}
+
+#form-container {
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: black;
+}
+
+input {
+    width: 95%;
+    background-color: #e0e0e0;
+    border: 1px solid #555;
+    color: black;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#start-register-button {
+    width: 100%;
+    padding: 10px;
+    margin: 15px 0;
+    display: block;
+    background-color: #f8b126;  /* Fondo azul */
+    color: white;               /* Texto blanco */
+    border: none;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+#start-register-button:hover {
+    background-color: #f3bd65;
+}
+
+#camera-container {
+    display: none;
+    text-align: center;
+    margin-top: 20px;
+}
+
+#videoElement {
+    width: 100%;  /* Ajustar video al tamaño del contenedor */
+    max-width: 100%;  /* Asegura que el video no exceda el tamaño del contenedor */
+    border-radius: 10px;  /* Bordes redondeados */
+}
+
+canvas {
+    display: none; /* Mantener el canvas oculto */
+}
+
+#photoThumbnails {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.thumbnail {
+    width: 100px;  /* Tamaño ajustado de la miniatura */
+    height: auto;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    width: 100%;  /* Los botones ocupan todo el ancho */
+}
+
+#start-camera, #take-photo, #save-record {
+    background-color: #f8b126;
+    color: white;
+}
+
+#start-camera:hover, #take-photo:hover, #save-record:hover {
+    background-color: #e9c784;
+}
+
+.centrar {
+    /*text-align: center; -- Ya no es necesario */
+    display: flex;
+    flex-direction: column; /* Apila los elementos (las filas) verticalmente */
+    align-items: center; /* Centra las filas horizontalmente */
+    gap: 10px; /* Añade un espacio entre las dos filas de botones */
+}
+
+.button-row {
+    display: flex;
+    justify-content: center; /* Centra los botones en la fila */
+    align-items: center;
+    gap: 20px; /* Espacio entre los botones de la misma fila */
+}
+
+#successMessage {
+    display: none;
+    color: green;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.photo-container {
+    position: relative;
+    display: inline-block;
+    margin: 10px;
+}
+
+.thumbnail {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+}
+
+.delete-photo {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    z-index: 10;
+}
+
+.delete-photo:hover {
+    background-color: darkred;
+}
+
+/* Menú inferior */
+.bottom-menu {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    background-color: #f3f3f3;
+}
+.bottom-button {
+    background-color: #ffd073;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;  /* Ajuste del tamaño del ícono */
+}
+
+.bottom-button .icon {
+    max-width: 50px; /* Tamaño del logo de registros */
+    height: auto;
+}
+
+.bottom-button i {
+    font-size: 24px;  /* Tamaño del icono */
+}
+
+.bottom-button:hover {
+    background-color: #f8c96c
+}
+
+.dropdown-item {
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #34495e;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+/* Botón redondo para "Tomar foto" */
+.round-button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #f8b126;
+    color: white;
+    font-size: 24px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 0; /* <-- CAMBIO IMPORTANTE: Quita el margen automático */
+}
+
+.round-button:hover {
+    background-color: #e9c784;
+}
+
+/* Botón redondo para "Tomar foto" */
+.round-button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #f8b126;
+    color: white;
+    font-size: 24px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 0; /* <-- CAMBIO IMPORTANTE: Quita el margen automático */
+}
+
+.round-button:hover {
+    background-color: #e9c784;
+}
+
+/* Botón de clip para adjuntar archivos */
+.clip-button {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: #666;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin: 0; /* <-- Añade esto para consistencia */
+}
+
+.clip-button:hover {
+    background-color: #e9e9e9;
+    color: #444;
+}
+
+/* Ocultar el input de archivo */
+.file-input {
+    display: none;
+}
