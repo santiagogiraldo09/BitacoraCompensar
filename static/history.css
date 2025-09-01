@@ -149,7 +149,7 @@ body, html {
 }
 
 .bottom-button:hover {
-    background-color: #d9961e;
+    background-color: #FF6600;
 }
 
 /* Botón de agregar nuevo proyecto */
@@ -170,7 +170,7 @@ body, html {
 }
 
 .add-project-button:hover {
-    background-color: #d4971e;
+    background-color: #FF6600;
 }
 
 /* Ajustes responsivos para los botones */
@@ -218,7 +218,7 @@ body, html {
 }
 
 .dropdown-item:hover {
-    background-color: #f3bd65;
+    background-color: #FF6600;
     color: #fff;
 }
 
