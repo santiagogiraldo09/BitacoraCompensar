@@ -60,7 +60,7 @@ CORS(app)
 projects = []
 
 # Conecta con el servicio de Blob Storage de Azure
-
+connection_string = "DefaultEndpointsProtocol=https;AccountName=registrobitacora;AccountKey=ZyHZAOvOBijiOfY3BR3ZEDZsCAHOu3swEPnS+D7AacR2Yr94HS+jBMa2/20sJpZ71decGXYHQxE2+AStBWI/wA==;EndpointSuffix=core.windows.net"
 container_name = "registros"
 
 
