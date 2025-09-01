@@ -63,7 +63,7 @@ input {
     padding: 10px;
     margin: 15px 0;
     display: block;
-    background-color: #f8b126;  /* Fondo azul */
+    background-color: #FF6600;  /* Fondo azul */
     color: white;               /* Texto blanco */
     border: none;
     border-radius: 5px;
@@ -74,7 +74,7 @@ input {
 }
 
 #start-register-button:hover {
-    background-color: #f3bd65;
+    background-color: #FF6600;
 }
 
 #camera-container {
@@ -120,12 +120,12 @@ button {
 }
 
 #start-camera, #take-photo, #save-record {
-    background-color: #f8b126;
+    background-color: #FF6600;
     color: white;
 }
 
 #start-camera:hover, #take-photo:hover, #save-record:hover {
-    background-color: #e9c784;
+    background-color: #FF6600;
 }
 
 .centrar {
@@ -188,7 +188,7 @@ button {
     background-color: #f3f3f3;
 }
 .bottom-button {
-    background-color: #ffd073;
+    background-color: #FF6600;
     color: white;
     padding: 10px 15px;
     border-radius: 10px;
@@ -207,7 +207,7 @@ button {
 }
 
 .bottom-button:hover {
-    background-color: #f8c96c
+    background-color: #FF6600
 }
 
 .dropdown-item {
@@ -224,7 +224,7 @@ button {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background-color: #f8b126;
+    background-color: #FF6600;
     color: white;
     font-size: 24px;
     border: none;
@@ -237,7 +237,7 @@ button {
 }
 
 .round-button:hover {
-    background-color: #e9c784;
+    background-color: #FF6600;
 }
 
 /* Botón redondo para "Tomar foto" */
@@ -245,7 +245,7 @@ button {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background-color: #f8b126;
+    background-color: #FF6600;
     color: white;
     font-size: 24px;
     border: none;
@@ -258,7 +258,7 @@ button {
 }
 
 .round-button:hover {
-    background-color: #e9c784;
+    background-color: #FF6600;
 }
 
 /* Botón de clip para adjuntar archivos */

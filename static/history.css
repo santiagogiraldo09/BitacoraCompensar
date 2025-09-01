@@ -130,7 +130,7 @@ body, html {
 }
 
 .bottom-button {
-    background-color: #f8b126;
+    background-color: #FF6600;
     color: white;
     padding: 10px 15px;
     border-radius: 10px;
@@ -159,7 +159,7 @@ body, html {
 }
 
 .add-project-button {
-    background-color: #f8b126;
+    background-color: #FF6600;
     color: white;
     padding: 12px 20px;
     border: none;

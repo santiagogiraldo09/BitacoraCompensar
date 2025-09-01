@@ -129,7 +129,7 @@ body, html {
 }
 
 .bottom-button {
-    background-color: #f8b126;
+    background-color: #FF6600;
     color: white;
     padding: 10px 15px;
     border-radius: 10px;
@@ -148,7 +148,7 @@ body, html {
 }
 
 .bottom-button:hover {
-    background-color: #d9961e;
+    background-color: #d86111;
 }
 
 /* Botón de agregar nuevo proyecto */
@@ -158,7 +158,7 @@ body, html {
 }
 
 .add-project-button {
-    background-color: #f8b126;
+    background-color: #FF6600;
     color: white;
     padding: 12px 20px;
     border: none;
@@ -169,7 +169,7 @@ body, html {
 }
 
 .add-project-button:hover {
-    background-color: #d4971e;
+    background-color: #d86111;
 }
 
 /* Ajustes responsivos para los botones */
@@ -217,7 +217,7 @@ body, html {
 }
 
 .dropdown-item:hover {
-    background-color: #f3bd65;
+    background-color: #FF6600;
     color: #fff;
 }
 

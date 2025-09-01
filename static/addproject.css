@@ -87,7 +87,7 @@ input {
 
 button[type="button"], button[type="submit"] {
     padding: 8px;
-    background-color: #f8b126;
+    background-color: #FF6600;
     color: white;
     border: none;
     border-radius: 5px;
@@ -97,7 +97,7 @@ button[type="button"], button[type="submit"] {
 }
 
 button[type="button"]:hover, button[type="submit"]:hover {
-    background-color: #f59b00;
+    background-color: #FF6600;
 }
 
 #location-container {
@@ -135,7 +135,7 @@ button[type="button"] {
 }
 
 .bottom-button {
-    background-color: #f8b126;
+    background-color: #FF6600;
     color: white;
     padding: 10px 15px;
     border-radius: 10px;
