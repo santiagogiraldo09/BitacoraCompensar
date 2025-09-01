@@ -8,7 +8,7 @@ let mediaRecorder;
 let audioChunks = [];
 const questions = [
     "¿Cuál es el tipo de informe?",
-    "MEncione la sede",
+    "Mencione la sede",
     "Mencione los repuestos utilizados",
     "Mencione los repuestos a cotizar"
 ];
@@ -388,33 +388,72 @@ function deletePhoto(index) {
 
 //Esto es lo nuevo
 document.getElementById('start-record-btn').addEventListener('click', () => {
-    if (!currentStream) {
-        alert("La cámara no está activa.");
-        return;
-    }
-    
-    videoChunks = [];
-    videoMediaRecorder = new MediaRecorder(currentStream, { mimeType: 'video/webm' });
+    try {
+        alert("Paso 1: Botón 'Grabar' presionado.");
 
-    videoMediaRecorder.ondataavailable = event => {
-        if (event.data.size > 0) videoChunks.push(event.data);
-    };
+        if (!currentStream || !currentStream.active) {
+            alert("ERROR: El stream de la cámara (currentStream) no está activo o no existe.");
+            return;
+        }
 
-    videoMediaRecorder.onstop = () => {
-        const videoBlob = new Blob(videoChunks, { type: 'video/webm' });
-        const reader = new FileReader();
-        reader.readAsDataURL(videoBlob);
-        reader.onloadend = () => {
-            const videoBase64 = reader.result;
-            capturedVideos.push(videoBase64);
-            addVideoThumbnail(videoBase64, capturedVideos.length - 1);
+        alert("Paso 2: El stream de la cámara está activo. Se procederá a crear MediaRecorder.");
+
+        // --- CORRECCIÓN PROACTIVA PARA IOS ---
+        // 'video/mp4' (usando el códec H.264) es mucho más compatible con Safari/iOS que 'video/webm'.
+        // Primero verificamos si el navegador soporta este formato.
+        const options = { mimeType: 'video/mp4; codecs=avc1' };
+        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+            console.warn(options.mimeType + ' no es soportado. Intentando con el formato por defecto (webm).');
+            // Si no soporta mp4, volvemos a webm como plan B.
+            options.mimeType = 'video/webm';
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                 alert("ERROR FATAL: Ni video/mp4 ni video/webm son soportados en este dispositivo.");
+                 return;
+            }
+        }
+        
+        alert("Paso 3: Se usará el formato de video: " + options.mimeType);
+
+        videoChunks = [];
+        // Usamos las 'options' que determinamos que son compatibles.
+        videoMediaRecorder = new MediaRecorder(currentStream, options);
+
+        alert("Paso 4: La instancia de MediaRecorder se ha creado exitosamente.");
+
+        // Configurar los manejadores de eventos (esto no debería fallar)
+        videoMediaRecorder.ondataavailable = event => {
+            if (event.data.size > 0) videoChunks.push(event.data);
         };
-    };
 
-    videoMediaRecorder.start();
-    document.getElementById('start-record-btn').style.display = 'none';
-    document.getElementById('stop-record-btn').style.display = 'inline-block';
-    document.getElementById('take-photo').style.display = 'none'; // Ocultar botón de foto mientras graba
+        videoMediaRecorder.onstop = () => {
+            // Reconstruir el blob con el tipo de video correcto
+            const videoBlob = new Blob(videoChunks, { type: options.mimeType });
+            const reader = new FileReader();
+            reader.readAsDataURL(videoBlob);
+            reader.onloadend = () => {
+                const videoBase64 = reader.result;
+                capturedVideos.push(videoBase64);
+                addVideoThumbnail(videoBase64, capturedVideos.length - 1);
+            };
+        };
+
+        alert("Paso 5: Eventos configurados. Se llamará a mediaRecorder.start().");
+
+        videoMediaRecorder.start();
+
+        alert("Paso 6: mediaRecorder.start() se ejecutó. Ahora se cambiarán los botones.");
+
+        // Si el código llega hasta aquí, la grabación se inició correctamente.
+        // Ahora, actualizamos la interfaz de usuario.
+        document.getElementById('start-record-btn').style.display = 'none';
+        document.getElementById('stop-record-btn').style.display = 'inline-block';
+        document.getElementById('take-photo').style.display = 'none';
+
+    } catch (error) {
+        // Si cualquier cosa en el bloque 'try' falla, esta alerta nos dirá qué fue.
+        alert('¡ERROR CRÍTICO! Falló el bloque try-catch: ' + error.name + " - " + error.message);
+        console.error("Error detallado al iniciar grabación:", error);
+    }
 });
 
 document.getElementById('stop-record-btn').addEventListener('click', () => {
