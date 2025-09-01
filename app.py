@@ -427,15 +427,38 @@ def historialregistro():
             ORDER BY id_registro DESC
         """, (project_id,))
 
-        for row in cursor.fetchall():
+        registros_principales = cursor.fetchall()
+
+        for row in registros_principales:
+            id_registro = row[0]
+            
+            # Obtener todas las fotos de la tabla 'fotos_registro'
+            cursor.execute("SELECT imagen_base64 FROM fotos_registro WHERE id_registro = %s", (id_registro,))
+            fotos = [item[0] for item in cursor.fetchall()]
+            
+            # Obtener todos los videos de la tabla 'videos_registro'
+            cursor.execute("SELECT video_base64 FROM videos_registro WHERE id_registro = %s", (id_registro,))
+            videos = [item[0] for item in cursor.fetchall()]
+
+            # Añadir todo a la lista de registros que se enviará al frontend
             registros.append({
-                'id': row[0],
+                'id': id_registro,
                 'zona_intervencion': row[1],
                 'items_value': row[2],
                 'metros_lineales': row[3],
                 'proximas_tareas': row[4],
-                'foto_base64': row[5],
+                'fotos': fotos,   # <-- Lista con todas las fotos
+                'videos': videos  # <-- Lista con todos los videos
             })
+            
+            #registros.append({
+                #'id': row[0],
+                #'zona_intervencion': row[1],
+                #'items_value': row[2],
+                #'metros_lineales': row[3],
+                #'proximas_tareas': row[4],
+                #'foto_base64': row[5],
+            #})
     except Exception as e:
         print(f"Error al obtener registros: {str(e)}")
     finally:

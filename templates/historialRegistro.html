@@ -77,7 +77,7 @@
                     {% for registro in registros %}
                     <div class="record-details">
                         <input type="checkbox" name="registro_ids" value="{{ registro.id }}" class="registro-checkbox">
-                        <h3>Código de registro: {{ registro.id }} - {{ registro.fecha }}</h3>
+                        <h3>Código de registro: {{ registro.id }}</h3>
                         <div class="record-field">
                             <label>Zona de intervención:</label>
                             <span>{{ registro.zona_intervencion }}</span>
@@ -94,12 +94,31 @@
                             <label>Descripción de próximas tareas:</label>
                             <span>{{ registro.proximas_tareas }}</span>
                         </div>
-                        {% if registro.foto_base64 %}
-                        <div class="record-field" style="margin-top: 10px;">
-                            <label>Foto:</label><br>
-                            <img src="{{ registro.foto_base64 }}" alt="Foto registrada" style="max-width: 250px; border: 2px solid #ccc; border-radius: 6px;">
+
+                        <div class="evidencia-container">
+                            <label>Evidencia:</label>
+                            
+                            <div class="media-gallery">
+                                {% for foto_b64 in registro.fotos %}
+                                    <div class="media-item">
+                                        <img src="{{ foto_b64 }}" alt="Evidencia fotográfica">
+                                    </div>
+                                {% endfor %}
+
+                                {% for video_b64 in registro.videos %}
+                                    <div class="media-item">
+                                        <video controls>
+                                            <source src="{{ video_b64 }}" type="video/webm">
+                                            Tu navegador no soporta la reproducción de video.
+                                        </video>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            
+                            {% if not registro.fotos and not registro.videos %}
+                                <p><small>No hay evidencia multimedia para este registro.</small></p>
+                            {% endif %}
                         </div>
-                        {% endif %}
                     </div>
                     {% endfor %}
                 {% else %}
