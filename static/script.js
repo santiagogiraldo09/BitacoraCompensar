@@ -389,14 +389,14 @@ function deletePhoto(index) {
 //Esto es lo nuevo
 document.getElementById('start-record-btn').addEventListener('click', () => {
     try {
-        alert("Paso 1: Botón 'Grabar' presionado.");
+        //alert("Paso 1: Botón 'Grabar' presionado.");
 
         if (!currentStream || !currentStream.active) {
             alert("ERROR: El stream de la cámara (currentStream) no está activo o no existe.");
             return;
         }
 
-        alert("Paso 2: El stream de la cámara está activo. Se procederá a crear MediaRecorder.");
+        //alert("Paso 2: El stream de la cámara está activo. Se procederá a crear MediaRecorder.");
 
         // --- CORRECCIÓN PROACTIVA PARA IOS ---
         // 'video/mp4' (usando el códec H.264) es mucho más compatible con Safari/iOS que 'video/webm'.
@@ -412,13 +412,13 @@ document.getElementById('start-record-btn').addEventListener('click', () => {
             }
         }
         
-        alert("Paso 3: Se usará el formato de video: " + options.mimeType);
+        //alert("Paso 3: Se usará el formato de video: " + options.mimeType);
 
         videoChunks = [];
         // Usamos las 'options' que determinamos que son compatibles.
         videoMediaRecorder = new MediaRecorder(currentStream, options);
 
-        alert("Paso 4: La instancia de MediaRecorder se ha creado exitosamente.");
+        //alert("Paso 4: La instancia de MediaRecorder se ha creado exitosamente.");
 
         // Configurar los manejadores de eventos (esto no debería fallar)
         videoMediaRecorder.ondataavailable = event => {
@@ -437,11 +437,11 @@ document.getElementById('start-record-btn').addEventListener('click', () => {
             };
         };
 
-        alert("Paso 5: Eventos configurados. Se llamará a mediaRecorder.start().");
+        //alert("Paso 5: Eventos configurados. Se llamará a mediaRecorder.start().");
 
         videoMediaRecorder.start();
 
-        alert("Paso 6: mediaRecorder.start() se ejecutó. Ahora se cambiarán los botones.");
+        //alert("Paso 6: mediaRecorder.start() se ejecutó. Ahora se cambiarán los botones.");
 
         // Si el código llega hasta aquí, la grabación se inició correctamente.
         // Ahora, actualizamos la interfaz de usuario.
