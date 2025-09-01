@@ -9,6 +9,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         
+        .evidencia-container {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .media-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px; /* Espacio entre las miniaturas */
+            margin-top: 5px;
+        }
+
+        .media-item img,
+        .media-item video {
+            width: 100px;  /* Ancho de la miniatura */
+            height: 100px; /* Alto de la miniatura */
+            object-fit: cover; /* Asegura que la imagen/video cubra el espacio sin deformarse */
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: #e0e0e0; /* Un fondo por si el medio no carga */
+        }
+
         .record-details {
             background-color: #f9f9f9;
             border-radius: 8px;
