@@ -217,6 +217,7 @@ function startCamera(facingMode = "environment") {
 }
 
 // Tomar la foto
+/*
 function takePhoto() {
     const canvas = document.getElementById('photoCanvas');
     const videoElement = document.getElementById('videoElement');
@@ -281,12 +282,59 @@ function takePhoto() {
 
     // Ocultar la cámara
     document.getElementById('videoElement').style.display = 'none';
+}*/
+
+function takePhoto() {
+    const canvas = document.getElementById('photoCanvas');
+    const videoElement = document.getElementById('videoElement');
+
+    // Tu validación (está perfecta)
+    if (videoElement.readyState !== 4) { // 4 = HAVE_ENOUGH_DATA
+        alert('La cámara no está lista. Espere un momento.');
+        return;
+    }
+
+    // Tu lógica para dibujar en el canvas (también perfecta)
+    canvas.width = videoElement.videoWidth;
+    canvas.height = videoElement.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+    // Obtén la imagen en formato Base64
+    const fotoBase64 = canvas.toDataURL('image/jpeg', 0.7);
+
+    // ===================================================================
+    //                     INICIO DE LOS CAMBIOS CLAVE
+    // ===================================================================
+
+    // CAMBIO 1: Añadimos la foto al array global 'capturedPhotos'.
+    // Esta es la línea más importante que faltaba.
+    capturedPhotos.push(fotoBase64);
+
+    // CAMBIO 2: Llamamos a una función para AÑADIR una nueva miniatura.
+    // En lugar de reemplazar la vista previa, ahora agregamos una nueva cada vez.
+    // El segundo parámetro es el índice del nuevo elemento en el array.
+    addPhotoThumbnail(fotoBase64, capturedPhotos.length - 1);
+
+    // CAMBIO 3: Eliminamos toda la lógica de 'Aceptar/Rehacer' y el guardado
+    // en 'base64-photo', ya que ahora cada foto tiene su propio botón de
+    // borrado y los datos se leen desde el array.
+
+    // CAMBIO 4 (Mejora de usabilidad): Mantenemos la cámara visible para que
+    // el usuario pueda tomar varias fotos seguidas sin tener que reactivarla.
+    // Por lo tanto, eliminamos las líneas que ocultaban `videoElement`.
+
+    // ===================================================================
+    //                      FIN DE LOS CAMBIOS CLAVE
+    // ===================================================================
 }
+
 const foto = document.getElementById('base64-photo').value;
 console.log(foto);
 
 
 // Función para agregar la miniatura de la foto
+/*
 function addPhotoThumbnail(photoSrc) {
     // Crear un contenedor para la miniatura
     const photoContainer = document.createElement('div');
@@ -299,6 +347,43 @@ function addPhotoThumbnail(photoSrc) {
 
     // Agregar el contenedor de la miniatura al área de miniaturas
     document.getElementById('photoThumbnails').appendChild(photoContainer);
+}*/
+
+/**
+ * Añade una miniatura de la foto a la galería en el HTML.
+ * @param {string} base64String - La imagen en formato base64.
+ * @param {number} index - El índice de la foto en el array capturedPhotos.
+ */
+function addPhotoThumbnail(base64String, index) {
+    const container = document.getElementById('photoThumbnails'); // El div que muestra las miniaturas
+
+    const thumbWrapper = document.createElement('div');
+    thumbWrapper.className = 'photo-thumbnail-wrapper';
+    thumbWrapper.setAttribute('data-index', index);
+
+    thumbWrapper.innerHTML = `
+        <img src="${base64String}" class="thumbnail-image">
+        <div class="photo-controls">
+            <button class="photo-button" onclick="deletePhoto(${index})" title="Eliminar foto">❌</button>
+        </div>
+    `;
+    container.appendChild(thumbWrapper);
+}
+
+/**
+ * Elimina una foto del array y de la vista previa.
+ * @param {number} index - El índice de la foto a eliminar.
+ */
+function deletePhoto(index) {
+    // Marcamos la foto como nula en el array en lugar de eliminarla
+    // para no alterar los índices de las otras fotos.
+    capturedPhotos[index] = null;
+
+    // Buscamos y eliminamos el elemento visual de la miniatura
+    const thumbnailToRemove = document.querySelector(`.photo-thumbnail-wrapper[data-index='${index}']`);
+    if (thumbnailToRemove) {
+        thumbnailToRemove.remove();
+    }
 }
 
 //Esto es lo nuevo
@@ -378,7 +463,7 @@ function deleteVideo(index) {
 }
 //Hasta acá va lo nuevo
 
-
+/*
 document.getElementById('file-input').addEventListener('change', function (event) {
     const file = event.target.files[0];
 
@@ -420,6 +505,27 @@ document.getElementById('file-input').addEventListener('change', function (event
     };
 
     reader.readAsDataURL(file); // Convierte el archivo a base64
+});*/
+
+document.getElementById('file-input').addEventListener('change', (event) => {
+    // Permite que el usuario seleccione múltiples archivos
+    Array.from(event.target.files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const photoBase64 = e.target.result;
+
+            // ---- LÍNEA CLAVE A AÑADIR/CORREGIR ----
+            // Añade la foto al array global
+            capturedPhotos.push(photoBase64);
+
+            // Muestra la miniatura
+            addPhotoThumbnail(photoBase64, capturedPhotos.length - 1);
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // Limpiar el input para permitir seleccionar el mismo archivo de nuevo
+    event.target.value = '';
 });
 
 
