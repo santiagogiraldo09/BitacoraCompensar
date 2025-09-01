@@ -80,7 +80,7 @@ h1, h2 {
     padding: 10px 20px;
     font-size: 16px;
     color: white;
-    background-color: #f8b126;
+    background-color: #ff6600;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -88,5 +88,5 @@ h1, h2 {
 }
 
 #back-button:hover {
-    background-color: #f8b126;
+    background-color: #ff6600;
 }

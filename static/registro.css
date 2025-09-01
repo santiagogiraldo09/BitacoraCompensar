@@ -86,7 +86,7 @@ header {
 }
 
 .form label .input:focus {
-  border-color: #f8b126;
+  border-color: #ff6600;
 }
 
 .form label .input + span {
@@ -108,14 +108,14 @@ header {
   top: -5px;
   font-size: 0.75em;
   font-weight: 600;
-  color: #f8b126;
+  color: #ff6600;
 }
 
 /* Botón de ingresar */
 .submit {
   width: 95%;
   padding: 10px;
-  background-color: #f8b126;
+  background-color: #ff6600;
   border: none;
   border-radius: 5px;
   color: rgb(0, 0, 0);
@@ -126,7 +126,7 @@ header {
 }
 
 .submit:hover {
-  background-color: #d89315;
+  background-color: #ff6600;
 }
 
 /* Link de iniciar sesión */
@@ -136,7 +136,7 @@ header {
 }
 
 .signin a {
-  color: #f8b126;
+  color: #ff6600;
   text-decoration: none;
 }
 

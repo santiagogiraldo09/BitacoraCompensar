@@ -72,7 +72,8 @@ body, html {
 }
 
 .button1, .button2 {
-  background-color: #f8b126;
+  background-color: #ff6600
+  /*background-color: #f8b126;*/
   color: white;
   padding: 10px 15px;
   border-radius: 5px;
@@ -85,7 +86,7 @@ body, html {
 
 .button3 {
   background-color: transparent;
-  color: #f8b126;
+  color: #ff6600;
   border: none;
   cursor: pointer;
   text-align: center;
