@@ -7,10 +7,10 @@ const capturedVideos = []; // Array para guardar videos en base64
 let mediaRecorder;
 let audioChunks = [];
 const questions = [
-    "¿Cuál es la zona de intervención?",
-    "¿Cuáles son los ítems instalados?",
-    "Mencione los métros lineales",
-    "Describe las próximas tareas."
+    "¿Cuál es el tipo de informe?",
+    "MEncione la sede",
+    "Mencione los repuestos utilizados",
+    "Mencione los repuestos a cotizar"
 ];
 const responses = [];
 
