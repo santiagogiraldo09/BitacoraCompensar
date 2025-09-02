@@ -388,45 +388,40 @@ function deletePhoto(index) {
 
 //Esto es lo nuevo
 document.getElementById('start-record-btn').addEventListener('click', () => {
+    if (!currentStream || !currentStream.active) {
+        alert("ERROR: El stream de la cámara no está activo.");
+        return;
+    }
+
     try {
-        //alert("Paso 1: Botón 'Grabar' presionado.");
+        // --- LÓGICA DE GRABACIÓN UNIVERSAL (Prioriza MP4) ---
+        console.log("Iniciando proceso de grabación...");
 
-        if (!currentStream || !currentStream.active) {
-            alert("ERROR: El stream de la cámara (currentStream) no está activo o no existe.");
-            return;
-        }
-
-        //alert("Paso 2: El stream de la cámara está activo. Se procederá a crear MediaRecorder.");
-
-        // --- CORRECCIÓN PROACTIVA PARA IOS ---
-        // 'video/mp4' (usando el códec H.264) es mucho más compatible con Safari/iOS que 'video/webm'.
-        // Primero verificamos si el navegador soporta este formato.
-        const options = { mimeType: 'video/mp4; codecs=avc1' };
+        // 1. Definimos las opciones de formato. MP4 es la prioridad.
+        let options = { mimeType: 'video/mp4; codecs=avc1' };
         if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-            console.warn(options.mimeType + ' no es soportado. Intentando con el formato por defecto (webm).');
-            // Si no soporta mp4, volvemos a webm como plan B.
-            options.mimeType = 'video/webm';
+            console.warn('MP4 no es soportado. Cambiando a WebM.');
+            options = { mimeType: 'video/webm' }; // Plan B
             if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-                 alert("ERROR FATAL: Ni video/mp4 ni video/webm son soportados en este dispositivo.");
-                 return;
+                alert("Error fatal: Ni MP4 ni WebM son soportados en este dispositivo.");
+                return;
             }
         }
         
-        //alert("Paso 3: Se usará el formato de video: " + options.mimeType);
+        console.log("Usando formato de grabación: ", options.mimeType);
+
+        // 2. Usamos el método de clonación solo si es iOS para evitar la congelación.
+        let streamToRecord = isIOS() ? new MediaStream([currentStream.getVideoTracks()[0].clone(), ...currentStream.getAudioTracks()]) : currentStream;
 
         videoChunks = [];
-        // Usamos las 'options' que determinamos que son compatibles.
-        videoMediaRecorder = new MediaRecorder(currentStream, options);
-
-        //alert("Paso 4: La instancia de MediaRecorder se ha creado exitosamente.");
-
-        // Configurar los manejadores de eventos (esto no debería fallar)
-        videoMediaRecorder.ondataavailable = event => {
-            if (event.data.size > 0) videoChunks.push(event.data);
-        };
+        videoMediaRecorder = new MediaRecorder(streamToRecord, options);
 
         videoMediaRecorder.onstop = () => {
-            // Reconstruir el blob con el tipo de video correcto
+            // Si el stream fue clonado (iOS), detenemos sus tracks para liberar recursos.
+            if (isIOS()) {
+                streamToRecord.getTracks().forEach(track => track.stop());
+            }
+
             const videoBlob = new Blob(videoChunks, { type: options.mimeType });
             const reader = new FileReader();
             reader.readAsDataURL(videoBlob);
@@ -437,22 +432,21 @@ document.getElementById('start-record-btn').addEventListener('click', () => {
             };
         };
 
-        //alert("Paso 5: Eventos configurados. Se llamará a mediaRecorder.start().");
+        videoMediaRecorder.ondataavailable = event => {
+            if (event.data.size > 0) videoChunks.push(event.data);
+        };
 
         videoMediaRecorder.start();
 
-        //alert("Paso 6: mediaRecorder.start() se ejecutó. Ahora se cambiarán los botones.");
-
-        // Si el código llega hasta aquí, la grabación se inició correctamente.
-        // Ahora, actualizamos la interfaz de usuario.
+        // Actualizar UI
         document.getElementById('start-record-btn').style.display = 'none';
         document.getElementById('stop-record-btn').style.display = 'inline-block';
         document.getElementById('take-photo').style.display = 'none';
+        document.getElementById('videoElement').classList.add('recording-active');
 
     } catch (error) {
-        // Si cualquier cosa en el bloque 'try' falla, esta alerta nos dirá qué fue.
-        alert('¡ERROR CRÍTICO! Falló el bloque try-catch: ' + error.name + " - " + error.message);
-        console.error("Error detallado al iniciar grabación:", error);
+        alert('ERROR al iniciar grabación: ' + error.message);
+        console.error("Error detallado:", error);
     }
 });
 

@@ -130,8 +130,8 @@
 
                                 {% for video_b64 in registro.videos %}
                                     <div class="media-item">
-                                        <video controls>
-                                            <source src="{{ video_b64 }}" type="video/webm">
+                                        <video controls playsinline preload="metadata">
+                                            <source src="{{ video_b64 }}">
                                             Tu navegador no soporta la reproducción de video.
                                         </video>
                                     </div>
