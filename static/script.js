@@ -595,6 +595,9 @@ function sendPhotoData() {
 
 // Función para guardar el registro
 function saveRecord() {
+    const saveButton = document.getElementById('save-record');
+    saveButton.disabled = true;
+    saveButton.textContent = "Guardando, por favor espere...";
     // Obtener el proyecto relacionado
     const projectName = document.getElementById('project-name').value;
     const fotoBase64 = document.getElementById('base64-photo').value;
@@ -685,6 +688,8 @@ function saveRecord() {
     .catch(error => {
         console.error('Error:', error);
         alert('Error en la conexión con el servidor.');
+        saveButton.disabled = false;
+        saveButton.textContent = "Guardar registro";
     });
 }
 
