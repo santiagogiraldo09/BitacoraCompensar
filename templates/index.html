@@ -121,41 +121,26 @@
 
             <!-- Contenedor para la cámara -->
             <div id="camera-container">
-                <video id="videoElement" autoplay playsinline muted></video>
-                <canvas id="photoCanvas" style="display:none;"></canvas>    
-                <div class="centrar">
+                <video id="videoElement" autoplay playsinline muted style="display: none;"></video>
+                <canvas id="photoCanvas" style="display:none;"></canvas>
+                
+                <div class="action-buttons-wrapper">
                     <div class="button-row">
-                        <button id="start-camera" style="display:none;" onclick="startCamera()">Iniciar cámara</button>
-                        <!-- Botón de tomar foto redondo -->
-                        <!--<button id="take-photo" class="round-button" style="display:none;" onclick="takePhoto()"></button>-->
-                        <button id="take-photo" class="round-button" style="display:none;" onclick="takePhoto()" title="Tomar Foto">
+                        <button id="take-photo" class="round-button" onclick="takePhoto()" title="Tomar Foto">
                             <i class="fas fa-camera"></i>
                         </button>
-                        <!--<button id="switch-camera" class="round-button" style="margin-left: 10px;">
-                            🔄
-                        </button> -->
-                        
-                        <!--Se agrega esto nuevo-->
-                        <button id="start-record-btn" class="round-button" style="display:none;" title="Grabar Video">
+                        <button id="start-record-btn" class="round-button" title="Grabar Video">
                             <i class="fas fa-video"></i>
                         </button>
                         <button id="stop-record-btn" class="round-button" style="display:none; background-color: #e74c3c;" title="Detener Grabación">
                             <i class="fas fa-stop"></i>
                         </button>
                     </div>
-                    <!--
-                    <div class="button-row">
-                        <button id="attach-video-clip" class="clip-button" onclick="document.getElementById('video-file-input').click()" title="Adjuntar video">🎥</button>
-                        <input type="file" id="video-file-input" class="file-input" accept="video/*" style="display:none;">-->
-                        <!-- Botón de adjuntar imagen -->
-                         <!--
-                        <button id="attach-clip" class="clip-button" onclick="document.getElementById('file-input').click()" title="Adjuntar imagen">📎</button>
-                        <input type="file" id="file-input" class="file-input" accept="image/*" multiple style="display:none;">
-                    </div> -->
                 </div>
-                
-                <button id="save-record" onclick="saveRecord()">Guardar registro</button>
-            </div> 
+            </div>
+            
+            <button id="save-record" onclick="saveRecord()">Guardar registro</button>
+             
             <div id="gallery-container">
                 <!-- Miniaturas de fotos -->
                 <div id="photoThumbnails" class="photo-thumbnails"></div>

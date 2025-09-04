@@ -1,4 +1,5 @@
 // Variables globales
+let isCameraActive = false; // Nos dice si la cámara ya fue encendida
 let currentQuestionIndex = 0;
 let currentFacingMode = "environment";
 let currentStream = null;
@@ -175,47 +176,27 @@ function isIOS() {
 }
 
 // Iniciar la cámara automáticamente cuando se completen las preguntas
-function startCamera(facingMode = "environment") {
-    const video = document.getElementById('videoElement');
-    const cameraContainer = document.getElementById('camera-container');
-    const takePhotoButton = document.getElementById('take-photo');
-    document.getElementById('start-record-btn').style.display = 'inline-block';
-    document.getElementById('stop-record-btn').style.display = 'none';
-    const startCameraButton = document.getElementById('start-camera');
-    //const switchCameraButton = document.getElementById('switch-camera');
 
-    // Detener cualquier stream anterior
-    if (currentStream) {
-        currentStream.getTracks().forEach(track => track.stop());
-    }
+async function startCamera() {
+    const videoElement = document.getElementById('videoElement');
+    const constraints = { video: { facingMode: 'environment' }, audio: true };
 
-    navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { exact: facingMode } }
-    }).then(function (stream) {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        videoElement.srcObject = stream;
         currentStream = stream;
-        video.srcObject = stream;
-        video.play();
-        //video.style.display = 'block';
-        cameraContainer.style.display = 'block';
-        takePhotoButton.style.display = 'block';
-        //switchCameraButton.style.display = 'block';
-        startCameraButton.style.display = 'none';
-    }).catch(function (error) {
-        console.warn(`No se pudo abrir la cámara con modo: ${facingMode}`, error);
-        // Fallback: intentar con la cámara predeterminada del dispositivo
-        navigator.mediaDevices.getUserMedia({ video: true }).then(function (fallbackStream) {
-            currentStream = fallbackStream;
-            video.srcObject = fallbackStream;
-            video.play();
-            //video.style.display = 'block';
-            cameraContainer.style.display = 'block';
-            takePhotoButton.style.display = 'block';
-            startCameraButton.style.display = 'none';
-        }).catch(function (fallbackError) {
-            console.error("No se pudo acceder a ninguna cámara.", fallbackError);
-            alert("No se pudo acceder a la cámara. Por favor, revisa los permisos del navegador.");
-        });
-    });
+        
+        // Ahora que tenemos el stream, mostramos el video y actualizamos el estado
+        videoElement.style.display = 'block';
+        isCameraActive = true; // ¡Cámara activada!
+
+        // Hacemos play explícitamente para compatibilidad con iOS
+        await videoElement.play();
+    } catch (error) {
+        console.error("Error al acceder a la cámara: ", error);
+        alert("No se pudo acceder a la cámara. Revisa los permisos.");
+        isCameraActive = false; // Marcamos que falló
+    }
 }
 
 // Tomar la foto
@@ -286,49 +267,26 @@ function takePhoto() {
     document.getElementById('videoElement').style.display = 'none';
 }*/
 
-function takePhoto() {
+async function takePhoto() {
+    // Primero, verifica si la cámara está apagada
+    if (!isCameraActive) {
+        // Si lo está, la enciende y ESPERA a que termine
+        await startCamera();
+        // Si startCamera falló, isCameraActive seguirá en false, y salimos.
+        if (!isCameraActive) return; 
+    }
+    
+    // Si llegamos aquí, la cámara ya está (o acaba de ser) encendida.
+    // El resto es tu lógica original para tomar la foto.
     const canvas = document.getElementById('photoCanvas');
     const videoElement = document.getElementById('videoElement');
-
-    // Tu validación (está perfecta)
-    if (videoElement.readyState !== 4) { // 4 = HAVE_ENOUGH_DATA
-        alert('La cámara no está lista. Espere un momento.');
-        return;
-    }
-
-    // Tu lógica para dibujar en el canvas (también perfecta)
+    
     canvas.width = videoElement.videoWidth;
     canvas.height = videoElement.videoHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-
-    // Obtén la imagen en formato Base64
-    const fotoBase64 = canvas.toDataURL('image/jpeg', 0.7);
-
-    // ===================================================================
-    //                     INICIO DE LOS CAMBIOS CLAVE
-    // ===================================================================
-
-    // CAMBIO 1: Añadimos la foto al array global 'capturedPhotos'.
-    // Esta es la línea más importante que faltaba.
-    capturedPhotos.push(fotoBase64);
-
-    // CAMBIO 2: Llamamos a una función para AÑADIR una nueva miniatura.
-    // En lugar de reemplazar la vista previa, ahora agregamos una nueva cada vez.
-    // El segundo parámetro es el índice del nuevo elemento en el array.
-    addPhotoThumbnail(fotoBase64, capturedPhotos.length - 1);
-
-    // CAMBIO 3: Eliminamos toda la lógica de 'Aceptar/Rehacer' y el guardado
-    // en 'base64-photo', ya que ahora cada foto tiene su propio botón de
-    // borrado y los datos se leen desde el array.
-
-    // CAMBIO 4 (Mejora de usabilidad): Mantenemos la cámara visible para que
-    // el usuario pueda tomar varias fotos seguidas sin tener que reactivarla.
-    // Por lo tanto, eliminamos las líneas que ocultaban `videoElement`.
-
-    // ===================================================================
-    //                      FIN DE LOS CAMBIOS CLAVE
-    // ===================================================================
+    canvas.getContext('2d').drawImage(videoElement, 0, 0);
+    const photoBase64 = canvas.toDataURL('image/jpeg', 0.8);
+    capturedPhotos.push(photoBase64);
+    addPhotoThumbnail(photoBase64, capturedPhotos.length - 1);
 }
 
 const foto = document.getElementById('base64-photo').value;
@@ -389,6 +347,7 @@ function deletePhoto(index) {
 }
 
 //Esto es lo nuevo
+/*
 document.getElementById('start-record-btn').addEventListener('click', () => {
     if (!currentStream || !currentStream.active) {
         alert("ERROR: El stream de la cámara no está activo.");
@@ -449,6 +408,30 @@ document.getElementById('start-record-btn').addEventListener('click', () => {
     } catch (error) {
         alert('ERROR al iniciar grabación: ' + error.message);
         console.error("Error detallado:", error);
+    }
+});*/
+document.getElementById('start-record-btn').addEventListener('click', async () => {
+    // Primero, verifica si la cámara está apagada
+    if (!isCameraActive) {
+        // Si lo está, la enciende y ESPERA a que termine
+        await startCamera();
+        if (!isCameraActive) return;
+    }
+
+    // Si llegamos aquí, la cámara ya está activa y podemos empezar a grabar.
+    // El resto es tu lógica de grabación que ya tenías.
+    // ... (tu código para crear MediaRecorder, usar isIOS(), etc.) ...
+    
+    // Por ejemplo:
+    try {
+        if (isIOS()) {
+            // Lógica de clonación para iOS
+        } else {
+            // Lógica directa para Android/PC
+        }
+        // ...código común de mediaRecorder.start() y actualización de UI...
+    } catch (error) {
+        // ...
     }
 });
 
@@ -817,7 +800,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // La funcionalidad del botón "Iniciar registro" ahora es simplemente mostrar la cámara
     document.getElementById('start-register-button').addEventListener('click', () => {
-        startCamera(); // Llama a la función que muestra el video y los botones de cámara/video
+        //startCamera(); // Llama a la función que muestra el video y los botones de cámara/video
         document.getElementById('start-register-button').style.display = 'none'; // Oculta el botón
     });
 
