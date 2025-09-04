@@ -81,6 +81,16 @@
                 <input type="text" id="question_3" editable="true">
             </div>
             
+            <div class="attachment-controls">
+                <label>Adjuntar Evidencia desde el dispositivo:</label>
+                <div class="button-row">
+                    <button id="attach-clip" class="clip-button" onclick="document.getElementById('file-input').click()" title="Adjuntar imagen">📎</button>
+                    <input type="file" id="file-input" class="file-input" accept="image/*" multiple style="display:none;">
+                    
+                    <button id="attach-video-clip" class="clip-button" onclick="document.getElementById('video-file-input').click()" title="Adjuntar video">🎥</button>
+                    <input type="file" id="video-file-input" class="file-input" accept="video/*" style="display:none;">
+                </div>
+            </div>
             
 
             <!-- Contenedor para la cámara -->
@@ -107,14 +117,15 @@
                             <i class="fas fa-stop"></i>
                         </button>
                     </div>
-
+                    <!--
                     <div class="button-row">
                         <button id="attach-video-clip" class="clip-button" onclick="document.getElementById('video-file-input').click()" title="Adjuntar video">🎥</button>
-                        <input type="file" id="video-file-input" class="file-input" accept="video/*" style="display:none;">
+                        <input type="file" id="video-file-input" class="file-input" accept="video/*" style="display:none;">-->
                         <!-- Botón de adjuntar imagen -->
+                         <!--
                         <button id="attach-clip" class="clip-button" onclick="document.getElementById('file-input').click()" title="Adjuntar imagen">📎</button>
                         <input type="file" id="file-input" class="file-input" accept="image/*" multiple style="display:none;">
-                    </div>
+                    </div> -->
                 </div>
 
                 <div id="gallery-container">
