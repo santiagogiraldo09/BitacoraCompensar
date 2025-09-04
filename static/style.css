@@ -78,9 +78,11 @@ input {
 }
 
 #camera-container {
-    display: none;
-    text-align: center;
-    margin-top: 20px;
+    display: none; /* Tu JS lo controla para mostrarlo u ocultarlo */
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
 }
 
 #videoElement {
@@ -286,4 +288,42 @@ button {
 /* Ocultar el input de archivo */
 .file-input {
     display: none;
+}
+
+.attachment-controls {
+    text-align: center;
+    padding: 15px 0;
+    margin-bottom: 10px;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+.attachment-controls label {
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.action-buttons-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#gallery-container {
+    width: 100%;
+    min-height: 110px; /* Le damos una altura mínima para que el diseño no "salte" */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.photo-thumbnails {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
 }
