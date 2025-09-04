@@ -267,6 +267,7 @@ function takePhoto() {
     document.getElementById('videoElement').style.display = 'none';
 }*/
 
+/*
 async function takePhoto() {
     // Primero, verifica si la cámara está apagada
     if (!isCameraActive) {
@@ -286,6 +287,29 @@ async function takePhoto() {
     canvas.getContext('2d').drawImage(videoElement, 0, 0);
     const photoBase64 = canvas.toDataURL('image/jpeg', 0.8);
     capturedPhotos.push(photoBase64);
+    addPhotoThumbnail(photoBase64, capturedPhotos.length - 1);
+}*/
+
+function takePhoto() {
+    // Si la cámara no está activa, no hagas nada (esto es un seguro)
+    if (!currentStream) {
+        alert("La cámara no está activa. Por favor, actívala primero.");
+        return;
+    }
+
+    const canvas = document.getElementById('photoCanvas');
+    const videoElement = document.getElementById('videoElement');
+    
+    canvas.width = videoElement.videoWidth;
+    canvas.height = videoElement.videoHeight;
+    canvas.getContext('2d').drawImage(videoElement, 0, 0);
+    
+    const photoBase64 = canvas.toDataURL('image/jpeg', 0.8);
+    
+    capturedPhotos.push(photoBase64);
+
+    // ¡LÍNEA CRÍTICA! Esta es la que crea la miniatura.
+    // Asegúrate de que esté presente.
     addPhotoThumbnail(photoBase64, capturedPhotos.length - 1);
 }
 
