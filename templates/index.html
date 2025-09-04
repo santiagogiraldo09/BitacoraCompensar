@@ -107,12 +107,13 @@
                     </button>
                 </div>
             </div>
+            
             <div class="centrar">
                 <button id="activate-camera-btn" class="activate-camera-button">
-                    <i class="fas fa-camera"></i> Activar Cámara
+                    <i class="fas fa-camera"></i> Activar Cámara para Evidencia
                 </button>
             </div>
-            
+
             <div class="attachment-controls">
                 <label>Adjuntar Evidencia desde el dispositivo:</label>
                 <div class="button-row">
@@ -123,16 +124,13 @@
                     <input type="file" id="video-file-input" class="file-input" accept="video/*" style="display:none;">
                 </div>
             </div>
-            
 
-            <!-- Contenedor para la cámara -->
-            <div id="camera-container">
-                <video id="videoElement" autoplay playsinline muted style="display: none;"></video>
+            <div id="camera-container" style="display: none;">
+                <video id="videoElement" autoplay playsinline muted></video>
                 <canvas id="photoCanvas" style="display:none;"></canvas>
-                
-                
             </div>
-            <div class="action-buttons-wrapper">
+            
+            <div class="action-buttons-wrapper" style="display: none;">
                 <div class="button-row">
                     <button id="take-photo" class="round-button" onclick="takePhoto()" title="Tomar Foto">
                         <i class="fas fa-camera"></i>
@@ -146,15 +144,14 @@
                 </div>
             </div>
             
-            <button id="save-record" onclick="saveRecord()">Guardar registro</button>
-             
             <div id="gallery-container">
-                <!-- Miniaturas de fotos -->
                 <div id="photoThumbnails" class="photo-thumbnails"></div>
-
-                <!-- Miniaturas de videos -->
-                <div id="videoThumbnails" class="photo-thumbnails" style="margin-top: 15px;"></div>
-             </div>           
+                <div id="videoThumbnails" class="photo-thumbnails"></div>
+            </div>
+            
+            <div class="centrar">
+                <button id="save-record" onclick="saveRecord()">Guardar registro</button>
+            </div>
             <!-- Campos ocultos -->
             <input type="hidden" id="base64-photo">
             <!--<input type="hidden" id="videos-json">-->
