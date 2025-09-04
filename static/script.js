@@ -176,26 +176,26 @@ function isIOS() {
 }
 
 // Iniciar la cámara automáticamente cuando se completen las preguntas
-
 async function startCamera() {
     const videoElement = document.getElementById('videoElement');
+    const cameraContainer = document.getElementById('camera-container');
+    const actionButtons = document.querySelector('.action-buttons-wrapper');
     const constraints = { video: { facingMode: 'environment' }, audio: true };
 
     try {
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        videoElement.srcObject = stream;
         currentStream = stream;
+        videoElement.srcObject = stream;
         
-        // Ahora que tenemos el stream, mostramos el video y actualizamos el estado
-        videoElement.style.display = 'block';
-        isCameraActive = true; // ¡Cámara activada!
+        // Hacemos visibles los contenedores de la cámara y sus botones
+        cameraContainer.style.display = 'block';
+        actionButtons.style.display = 'block';
 
-        // Hacemos play explícitamente para compatibilidad con iOS
         await videoElement.play();
     } catch (error) {
         console.error("Error al acceder a la cámara: ", error);
         alert("No se pudo acceder a la cámara. Revisa los permisos.");
-        isCameraActive = false; // Marcamos que falló
+        document.getElementById('activate-camera-btn').style.display = 'block';
     }
 }
 
@@ -786,6 +786,12 @@ function transcribeAudio(audioBlob) {
 // Usamos 'DOMContentLoaded' para asegurarnos de que todo el HTML está cargado
 document.addEventListener('DOMContentLoaded', () => {
     
+    // Listener para el nuevo botón de activar cámara
+    document.getElementById('activate-camera-btn').addEventListener('click', () => {
+        startCamera();
+        document.getElementById('activate-camera-btn').style.display = 'none';
+    });
+    
     // Asignar evento a todos los botones de GRABAR
     const recordButtons = document.querySelectorAll('.record-btn');
     recordButtons.forEach(button => {
@@ -797,13 +803,6 @@ document.addEventListener('DOMContentLoaded', () => {
     stopButtons.forEach(button => {
         button.addEventListener('click', stopFieldRecording);
     });
-
-    // La funcionalidad del botón "Iniciar registro" ahora es simplemente mostrar la cámara
-    document.getElementById('start-register-button').addEventListener('click', () => {
-        //startCamera(); // Llama a la función que muestra el video y los botones de cámara/video
-        document.getElementById('start-register-button').style.display = 'none'; // Oculta el botón
-    });
-
 });
 
 
