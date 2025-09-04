@@ -63,8 +63,14 @@
             </div>
             <div class="form-group">
                 <label for="question_0">Tipo de informe:</label>
-                <input type="text" id="question_0" editable="true">
-                
+                <div class="input-with-icon">
+                    <input type="text" id="question_0">
+                    <button class="record-btn" data-target-input="question_0" title="Grabar respuesta">
+                        <i class="fas fa-microphone"></i> </button>
+                    <button class="stop-btn" data-target-input="question_0" title="Detener grabación" style="display: none;">
+                        <i class="fas fa-stop"></i>
+                    </button>
+                </div>
             </div>
             <div class="form-group">
                 <label for="question_1">Sede:</label>
