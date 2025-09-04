@@ -180,20 +180,23 @@ async function startCamera() {
     const videoElement = document.getElementById('videoElement');
     const cameraContainer = document.getElementById('camera-container');
     const actionButtons = document.querySelector('.action-buttons-wrapper');
-    const constraints = { video: { facingMode: 'environment' }, audio: true };
+
+    // Ocultar/mostrar botones al inicio
+    document.getElementById('start-record-btn').style.display = 'flex';
+    document.getElementById('take-photo').style.display = 'flex';
+    document.getElementById('stop-record-btn').style.display = 'none';
 
     try {
+        const constraints = { video: { facingMode: 'environment' }, audio: true };
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         currentStream = stream;
         videoElement.srcObject = stream;
-        
-        // Hacemos visibles los contenedores de la cámara y sus botones
+        await videoElement.play();
+
         cameraContainer.style.display = 'block';
         actionButtons.style.display = 'block';
-
-        await videoElement.play();
     } catch (error) {
-        console.error("Error al acceder a la cámara: ", error);
+        console.error("Error al acceder a la cámara:", error);
         alert("No se pudo acceder a la cámara. Revisa los permisos.");
         document.getElementById('activate-camera-btn').style.display = 'block';
     }
@@ -809,30 +812,78 @@ function transcribeAudio(audioBlob) {
 
 // Usamos 'DOMContentLoaded' para asegurarnos de que todo el HTML está cargado
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // Listener para el nuevo botón de activar cámara
+    // --- Eventos para la cámara principal ---
     document.getElementById('activate-camera-btn').addEventListener('click', () => {
         startCamera();
         document.getElementById('activate-camera-btn').style.display = 'none';
     });
-    
-    // Asignar evento a todos los botones de GRABAR
-    const recordButtons = document.querySelectorAll('.record-btn');
-    recordButtons.forEach(button => {
+
+    document.getElementById('start-record-btn').addEventListener('click', startVideoRecording);
+    document.getElementById('stop-record-btn').addEventListener('click', stopVideoRecording);
+
+    // --- Eventos para adjuntar archivos ---
+    document.getElementById('file-input').addEventListener('change', handleFileUpload);
+    document.getElementById('video-file-input').addEventListener('change', handleVideoUpload);
+
+    // --- Eventos para grabación de audio por campo ---
+    document.querySelectorAll('.record-btn').forEach(button => {
         button.addEventListener('click', () => startFieldRecording(button));
     });
 
-    // Asignar evento a todos los botones de PARAR
-    const stopButtons = document.querySelectorAll('.stop-btn');
-    stopButtons.forEach(button => {
+    document.querySelectorAll('.stop-btn').forEach(button => {
         button.addEventListener('click', stopFieldRecording);
     });
 });
 
 
-
 document.getElementById('successMessage').style.display = 'block';
 
+function startVideoRecording() {
+    if (!currentStream) {
+        alert("La cámara no está activa.");
+        return;
+    }
+    try {
+        let options = { mimeType: 'video/mp4; codecs=avc1' };
+        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+            options = { mimeType: 'video/webm' };
+        }
+        let streamToRecord = isIOS() ? new MediaStream([currentStream.getVideoTracks()[0].clone(), ...currentStream.getAudioTracks()]) : currentStream;
+        videoChunks = [];
+        videoMediaRecorder = new MediaRecorder(streamToRecord, options);
+        videoMediaRecorder.onstop = () => {
+            if (isIOS()) streamToRecord.getTracks().forEach(track => track.stop());
+            const videoBlob = new Blob(videoChunks, { type: options.mimeType });
+            const reader = new FileReader();
+            reader.readAsDataURL(videoBlob);
+            reader.onloadend = () => {
+                capturedVideos.push(reader.result);
+                addVideoThumbnail(reader.result, capturedVideos.length - 1);
+            };
+        };
+        videoMediaRecorder.ondataavailable = event => {
+            if (event.data.size > 0) videoChunks.push(event.data);
+        };
+        videoMediaRecorder.start();
+        updateRecordingUI(true);
+    } catch (error) {
+        alert('ERROR al iniciar grabación: ' + error.message);
+    }
+}
+
+function stopVideoRecording() {
+    if (videoMediaRecorder && videoMediaRecorder.state === 'recording') {
+        videoMediaRecorder.stop();
+    }
+    updateRecordingUI(false);
+}
+
+function updateRecordingUI(isRecordingActive) {
+    document.getElementById('videoElement').classList.toggle('recording-active', isRecordingActive);
+    document.getElementById('start-record-btn').style.display = isRecordingActive ? 'none' : 'flex';
+    document.getElementById('stop-record-btn').style.display = isRecordingActive ? 'flex' : 'none';
+    document.getElementById('take-photo').style.display = isRecordingActive ? 'none' : 'flex';
+}
 
 // Empezar el proceso de preguntas en cuanto cargue la página
 /*window.onload = function() {
