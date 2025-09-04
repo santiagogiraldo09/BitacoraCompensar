@@ -320,7 +320,7 @@ button {
 /* 4. Estilos específicos que ya tenías (y están bien) */
 .record-btn {
     background-color: transparent;
-    color: #28a745; /* Verde */
+    color: #FF6600; /* Verde */
     font-size: 24px;
 }
 .record-btn:hover {
