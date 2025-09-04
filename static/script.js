@@ -808,7 +808,7 @@ function transcribeAudio(audioBlob) {
 // =================================================================
 
 // Usamos 'DOMContentLoaded' para asegurarnos de que todo el HTML está cargado
-document.addEventListener('DOMContentLoaded', () => {
+/*document.addEventListener('DOMContentLoaded', () => {
     
     // Listener para el nuevo botón de activar cámara
     document.getElementById('activate-camera-btn').addEventListener('click', () => {
@@ -827,8 +827,82 @@ document.addEventListener('DOMContentLoaded', () => {
     stopButtons.forEach(button => {
         button.addEventListener('click', stopFieldRecording);
     });
+});*/
+
+document.addEventListener('DOMContentLoaded', () => {
+    // ... tus otros listeners (activate-camera-btn, record-btn para campos, etc.)
+
+    // --- AÑADE O REEMPLAZA ESTOS LISTENERS PARA LOS CONTROLES DE LA CÁMARA ---
+
+    // Listener para el botón de INICIAR grabación de video
+    document.getElementById('start-record-btn').addEventListener('click', () => {
+        if (!currentStream) {
+            alert("La cámara no está activa. Por favor, actívala primero.");
+            return;
+        }
+        // Llama a la lógica de grabación que ya habíamos construido
+        // (La que tiene detección de iOS, clonación de track, etc.)
+        startVideoRecording(); 
+    });
+
+    // Listener para el botón de DETENER grabación de video
+    document.getElementById('stop-record-btn').addEventListener('click', () => {
+        if (videoMediaRecorder && videoMediaRecorder.state === 'recording') {
+            videoMediaRecorder.stop();
+        }
+        
+        // Restaura la UI
+        document.getElementById('videoElement').classList.remove('recording-active');
+        document.getElementById('start-record-btn').style.display = 'flex'; // Muestra el botón de grabar
+        document.getElementById('stop-record-btn').style.display = 'none';   // Oculta el de parar
+        document.getElementById('take-photo').style.display = 'flex';       // Vuelve a mostrar el de foto
+    });
 });
 
+function startVideoRecording() {
+    try {
+        // Lógica de grabación universal (Prioriza MP4)
+        let options = { mimeType: 'video/mp4; codecs=avc1' };
+        if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+            options.mimeType = 'video/webm';
+        }
+
+        let streamToRecord = isIOS() ? new MediaStream([currentStream.getVideoTracks()[0].clone(), ...currentStream.getAudioTracks()]) : currentStream;
+
+        videoChunks = [];
+        videoMediaRecorder = new MediaRecorder(streamToRecord, options);
+
+        videoMediaRecorder.onstop = () => {
+            if (isIOS()) {
+                streamToRecord.getTracks().forEach(track => track.stop());
+            }
+            const videoBlob = new Blob(videoChunks, { type: options.mimeType });
+            const reader = new FileReader();
+            reader.readAsDataURL(videoBlob);
+            reader.onloadend = () => {
+                const videoBase64 = reader.result;
+                capturedVideos.push(videoBase64);
+                // ¡LÍNEA CRÍTICA! Esta es la que crea la miniatura del video.
+                addVideoThumbnail(videoBase64, capturedVideos.length - 1);
+            };
+        };
+
+        videoMediaRecorder.ondataavailable = event => {
+            if (event.data.size > 0) videoChunks.push(event.data);
+        };
+
+        videoMediaRecorder.start();
+
+        // Actualiza la UI para mostrar que se está grabando
+        document.getElementById('videoElement').classList.add('recording-active');
+        document.getElementById('start-record-btn').style.display = 'none'; // Oculta el botón de grabar
+        document.getElementById('stop-record-btn').style.display = 'flex';  // Muestra el de parar
+        document.getElementById('take-photo').style.display = 'none';      // Oculta el de foto mientras graba
+    } catch (error) {
+        alert('ERROR al iniciar grabación: ' + error.message);
+        console.error("Error detallado:", error);
+    }
+}
 
 
 document.getElementById('successMessage').style.display = 'block';
