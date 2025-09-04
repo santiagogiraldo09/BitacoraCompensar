@@ -705,106 +705,58 @@ function saveRecord() {
     });
 }
 
-/**
- * Inicia el proceso de grabación para un campo específico.
- * @param {HTMLElement} recordButton - El botón de micrófono que fue presionado.
- */
 function startFieldRecording(recordButton) {
-    if (isRecording) {
-        console.warn("Ya hay una grabación en curso.");
-        return; // Evita iniciar una nueva grabación si ya hay una activa
-    }
-
-    navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(stream => {
-            isRecording = true;
-            audioChunks = [];
-            
-            // Identifica el campo de texto y el botón de parar correspondientes
-            const targetInputId = recordButton.dataset.targetInput;
-            currentTargetInput = document.getElementById(targetInputId);
-            const stopButton = document.querySelector(`.stop-btn[data-target-input='${targetInputId}']`);
-
-            // Actualiza la UI: oculta micrófono, muestra stop y resalta el campo
-            recordButton.style.display = 'none';
-            stopButton.style.display = 'flex';
-            currentTargetInput.classList.add('recording-active');
-            currentTargetInput.placeholder = "Escuchando...";
-
-            // Crea y configura el MediaRecorder
-            mediaRecorder = new MediaRecorder(stream);
-            mediaRecorder.start();
-
-            mediaRecorder.ondataavailable = event => {
-                audioChunks.push(event.data);
-            };
-
-            mediaRecorder.onstop = () => {
-                // Detener los tracks del micrófono para que el ícono de grabación del navegador desaparezca
-                stream.getTracks().forEach(track => track.stop());
-
-                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                transcribeAudio(audioBlob);
-            };
-        })
-        .catch(err => {
-            console.error("Error al acceder al micrófono:", err);
-            alert("No se pudo acceder al micrófono. Por favor, revisa los permisos.");
-        });
+    if (isFieldRecording) return;
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        isFieldRecording = true;
+        audioChunks = [];
+        const targetInputId = recordButton.dataset.targetInput;
+        currentTargetInput = document.getElementById(targetInputId);
+        const stopButton = document.querySelector(`.stop-btn[data-target-input='${targetInputId}']`);
+        recordButton.style.display = 'none';
+        stopButton.style.display = 'flex';
+        currentTargetInput.classList.add('recording-active');
+        currentTargetInput.placeholder = "Escuchando...";
+        audioMediaRecorder = new MediaRecorder(stream);
+        audioMediaRecorder.start();
+        audioMediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+        audioMediaRecorder.onstop = () => {
+            stream.getTracks().forEach(track => track.stop());
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            transcribeAudio(audioBlob);
+        };
+    }).catch(err => alert("No se pudo acceder al micrófono."));
 }
 
-/**
- * Detiene la grabación en curso.
- */
 function stopFieldRecording() {
-    if (mediaRecorder && isRecording) {
-        mediaRecorder.stop();
+    if (audioMediaRecorder && isFieldRecording) {
+        audioMediaRecorder.stop();
     }
 }
 
-/**
- * Envía el audio al backend y maneja la respuesta de la transcripción.
- * @param {Blob} audioBlob - El archivo de audio grabado.
- */
 function transcribeAudio(audioBlob) {
     const formData = new FormData();
     formData.append('audio', audioBlob, 'respuesta.webm');
-
-    // Feedback visual mientras se transcribe
     currentTargetInput.placeholder = "Transcribiendo...";
-
-    fetch('/transcribe-audio', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.text) {
-            // Si hay texto, lo añadimos al valor actual del campo
-            currentTargetInput.value += (currentTargetInput.value ? ' ' : '') + data.text;
-        } else {
-            alert("No se pudo entender el audio. Por favor, intente de nuevo.");
-        }
-    })
-    .catch(err => {
-        console.error("Error en la transcripción:", err);
-        alert("Ocurrió un error al contactar el servidor de transcripción.");
-    })
-    .finally(() => {
-        // Restaura la UI sin importar si hubo éxito o error
-        const targetInputId = currentTargetInput.id;
-        const recordButton = document.querySelector(`.record-btn[data-target-input='${targetInputId}']`);
-        const stopButton = document.querySelector(`.stop-btn[data-target-input='${targetInputId}']`);
-
-        recordButton.style.display = 'flex';
-        stopButton.style.display = 'none';
-        currentTargetInput.classList.remove('recording-active');
-        currentTargetInput.placeholder = "";
-
-        // Resetea el estado global
-        isRecording = false;
-        currentTargetInput = null;
-    });
+    fetch('/transcribe-audio', { method: 'POST', body: formData })
+        .then(response => response.json())
+        .then(data => {
+            if (data.text) {
+                currentTargetInput.value += (currentTargetInput.value ? ' ' : '') + data.text;
+            } else {
+                alert("No se pudo entender el audio.");
+            }
+        })
+        .catch(err => alert("Error en la transcripción."))
+        .finally(() => {
+            const targetInputId = currentTargetInput.id;
+            document.querySelector(`.record-btn[data-target-input='${targetInputId}']`).style.display = 'flex';
+            document.querySelector(`.stop-btn[data-target-input='${targetInputId}']`).style.display = 'none';
+            currentTargetInput.classList.remove('recording-active');
+            currentTargetInput.placeholder = "";
+            isFieldRecording = false;
+            currentTargetInput = null;
+        });
 }
 // =================================================================
 //          4. INICIALIZACIÓN DE EVENTOS
