@@ -287,3 +287,50 @@ button {
 .file-input {
     display: none;
 }
+
+.input-with-icon {
+    display: flex;         /* Activa la alineación horizontal */
+    align-items: center;   /* Centra verticalmente el botón con el input */
+    gap: 10px;             /* Espacio entre el input y el botón */
+}
+
+/* Hacemos que el input ocupe el espacio sobrante */
+.input-with-icon input {
+    flex-grow: 1; /* El input se estira */
+    /* Anulamos cualquier ancho fijo que pueda tener para que flexbox lo controle */
+    width: auto;  
+}
+
+/* Esta regla es más específica que 'button' y por eso ganará. */
+.record-btn, .stop-btn {
+    flex-shrink: 0;       /* Evita que el botón se encoja */
+    width: 44px;          /* <-- Anula el width: 100% y le da un tamaño fijo */
+    height: 44px;         /* <-- Le da un tamaño fijo */
+    margin: 0;            /* Quitamos márgenes que puedan interferir */
+    padding: 0;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s ease;
+}
+
+/* 4. Estilos específicos que ya tenías (y están bien) */
+.record-btn {
+    background-color: transparent;
+    color: #28a745; /* Verde */
+    font-size: 24px;
+}
+.record-btn:hover {
+    background-color: #f0f0f0;
+}
+.stop-btn {
+    background-color: #e74c3c; /* Rojo */
+    color: white;
+    font-size: 20px;
+}
+.stop-btn:hover {
+    background-color: #c0392b;
+}
