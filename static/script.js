@@ -6,6 +6,8 @@ const capturedPhotos = []; // Array para guardar fotos en base64
 const capturedVideos = []; // Array para guardar videos en base64
 let mediaRecorder;
 let audioChunks = [];
+let isRecording = false; // Semáforo para saber si ya hay una grabación en curso
+let currentTargetInput = null; // Para saber qué campo de texto estamos llenando
 const questions = [
     "¿Cuál es el tipo de informe?",
     "Mencione la sede",
@@ -692,6 +694,134 @@ function saveRecord() {
         saveButton.textContent = "Guardar registro";
     });
 }
+
+/**
+ * Inicia el proceso de grabación para un campo específico.
+ * @param {HTMLElement} recordButton - El botón de micrófono que fue presionado.
+ */
+function startFieldRecording(recordButton) {
+    if (isRecording) {
+        console.warn("Ya hay una grabación en curso.");
+        return; // Evita iniciar una nueva grabación si ya hay una activa
+    }
+
+    navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+            isRecording = true;
+            audioChunks = [];
+            
+            // Identifica el campo de texto y el botón de parar correspondientes
+            const targetInputId = recordButton.dataset.targetInput;
+            currentTargetInput = document.getElementById(targetInputId);
+            const stopButton = document.querySelector(`.stop-btn[data-target-input='${targetInputId}']`);
+
+            // Actualiza la UI: oculta micrófono, muestra stop y resalta el campo
+            recordButton.style.display = 'none';
+            stopButton.style.display = 'flex';
+            currentTargetInput.classList.add('recording-active');
+            currentTargetInput.placeholder = "Escuchando...";
+
+            // Crea y configura el MediaRecorder
+            mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.start();
+
+            mediaRecorder.ondataavailable = event => {
+                audioChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                // Detener los tracks del micrófono para que el ícono de grabación del navegador desaparezca
+                stream.getTracks().forEach(track => track.stop());
+
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                transcribeAudio(audioBlob);
+            };
+        })
+        .catch(err => {
+            console.error("Error al acceder al micrófono:", err);
+            alert("No se pudo acceder al micrófono. Por favor, revisa los permisos.");
+        });
+}
+
+/**
+ * Detiene la grabación en curso.
+ */
+function stopFieldRecording() {
+    if (mediaRecorder && isRecording) {
+        mediaRecorder.stop();
+    }
+}
+
+/**
+ * Envía el audio al backend y maneja la respuesta de la transcripción.
+ * @param {Blob} audioBlob - El archivo de audio grabado.
+ */
+function transcribeAudio(audioBlob) {
+    const formData = new FormData();
+    formData.append('audio', audioBlob, 'respuesta.webm');
+
+    // Feedback visual mientras se transcribe
+    currentTargetInput.placeholder = "Transcribiendo...";
+
+    fetch('/transcribe-audio', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.text) {
+            // Si hay texto, lo añadimos al valor actual del campo
+            currentTargetInput.value += (currentTargetInput.value ? ' ' : '') + data.text;
+        } else {
+            alert("No se pudo entender el audio. Por favor, intente de nuevo.");
+        }
+    })
+    .catch(err => {
+        console.error("Error en la transcripción:", err);
+        alert("Ocurrió un error al contactar el servidor de transcripción.");
+    })
+    .finally(() => {
+        // Restaura la UI sin importar si hubo éxito o error
+        const targetInputId = currentTargetInput.id;
+        const recordButton = document.querySelector(`.record-btn[data-target-input='${targetInputId}']`);
+        const stopButton = document.querySelector(`.stop-btn[data-target-input='${targetInputId}']`);
+
+        recordButton.style.display = 'flex';
+        stopButton.style.display = 'none';
+        currentTargetInput.classList.remove('recording-active');
+        currentTargetInput.placeholder = "";
+
+        // Resetea el estado global
+        isRecording = false;
+        currentTargetInput = null;
+    });
+}
+// =================================================================
+//          4. INICIALIZACIÓN DE EVENTOS
+// =================================================================
+
+// Usamos 'DOMContentLoaded' para asegurarnos de que todo el HTML está cargado
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // Asignar evento a todos los botones de GRABAR
+    const recordButtons = document.querySelectorAll('.record-btn');
+    recordButtons.forEach(button => {
+        button.addEventListener('click', () => startFieldRecording(button));
+    });
+
+    // Asignar evento a todos los botones de PARAR
+    const stopButtons = document.querySelectorAll('.stop-btn');
+    stopButtons.forEach(button => {
+        button.addEventListener('click', stopFieldRecording);
+    });
+
+    // La funcionalidad del botón "Iniciar registro" ahora es simplemente mostrar la cámara
+    document.getElementById('start-register-button').addEventListener('click', () => {
+        startCamera(); // Llama a la función que muestra el video y los botones de cámara/video
+        document.getElementById('start-register-button').style.display = 'none'; // Oculta el botón
+    });
+
+});
 
 
 
