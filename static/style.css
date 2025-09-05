@@ -10,23 +10,13 @@ body {
     height: 100vh;
 }
 
-/* Hacemos que el contenedor principal de la app ocupe toda la pantalla */
 #app {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    max-height: 100vh; /* Para iOS */
     width: 100%;
-    max-width: 450px;
-    margin: 0 auto;
-    background-color: #fff;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-/* El header se queda fijo arriba */
-#app > header {
-    flex-shrink: 0;
-    /* ... tus estilos de header existentes ... */
+    max-width: 400px; /* Mantener el tamaño para simular un celular */
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: white;
 }
 
 /* ¡LA PARTE CLAVE! El contenido del formulario ahora es la zona de scroll */
