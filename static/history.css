@@ -259,3 +259,16 @@ body, html {
     background-color: #f9f9f9;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+
+#project-records {
+    /* 1. Le damos una altura máxima. 
+       Puedes ajustar este valor. 60vh significa 60% de la altura de la pantalla del dispositivo. 
+       Es un buen punto de partida para móviles. */
+    max-height: 60vh;
+
+    /* 2. Le decimos que muestre una barra de scroll si el contenido se pasa de esa altura. */
+    overflow-y: auto;
+
+    /* (Opcional) Un pequeño borde para que veas claramente el contenedor mientras pruebas */
+    border: 1px solid rgb(255, 255, 255); 
+}
