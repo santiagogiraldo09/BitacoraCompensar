@@ -353,3 +353,31 @@ button {
 .stop-btn:hover {
     background-color: #c0392b;
 }
+
+/* Contenedor para la descripción dentro de la miniatura */
+.thumbnail-description-box {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Espacio pequeño entre el input y el micrófono */
+    width: 100%;
+    margin-top: 8px; /* Espacio entre la imagen/video y el campo de texto */
+    padding: 0 5px;
+    box-sizing: border-box;
+}
+
+/* El campo de texto de la descripción */
+.thumbnail-input {
+    flex-grow: 1; /* Ocupa el espacio disponible */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 6px;
+    font-size: 12px;
+}
+
+/* Ajustamos los botones de micrófono y stop para que sean más pequeños dentro de la miniatura */
+.thumbnail-description-box .record-btn,
+.thumbnail-description-box .stop-btn {
+    width: 34px;
+    height: 34px;
+    font-size: 16px; /* Hacemos el ícono un poco más pequeño */
+}
