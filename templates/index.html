@@ -61,7 +61,7 @@
 
         <input type="hidden" id="project-name">
 
-        <div id="form-container" class="scrollable-content">
+        <div id="form-container">
             
             <div class="form-group">
                 <label for="question_0">Tipo de informe:</label>
@@ -111,10 +111,41 @@
                     </button>
                 </div>
             </div>
+            
+            <div class="centrar">
+                <button id="activate-camera-btn" class="activate-camera-button">
+                    <i class="fas fa-camera"></i> Activar Cámara para Evidencia
+                </button>
+            </div>
+
+            <div class="attachment-controls">
+                <label>Adjuntar Evidencia desde el dispositivo:</label>
+                <div class="button-row">
+                    <button id="attach-clip" class="clip-button" onclick="document.getElementById('file-input').click()" title="Adjuntar imagen">📎</button>
+                    <input type="file" id="file-input" class="file-input" accept="image/*" multiple style="display:none;">
+                    
+                    <button id="attach-video-clip" class="clip-button" onclick="document.getElementById('video-file-input').click()" title="Adjuntar video">🎥</button>
+                    <input type="file" id="video-file-input" class="file-input" accept="video/*" style="display:none;">
+                </div>
+            </div>
 
             <div id="camera-container" style="display: none;">
                 <video id="videoElement" autoplay playsinline muted></video>
                 <canvas id="photoCanvas" style="display:none;"></canvas>
+            </div>
+            
+            <div class="action-buttons-wrapper" style="display: none;">
+                <div class="button-row">
+                    <button id="take-photo" class="round-button" onclick="takePhoto()" title="Tomar Foto">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                    <button id="start-record-btn" class="round-button" title="Grabar Video">
+                        <i class="fas fa-video"></i>
+                    </button>
+                    <button id="stop-record-btn" class="round-button" title="Detener Grabación">
+                        <i class="fas fa-stop"></i>
+                    </button>
+                </div>
             </div>
             
             <div id="gallery-container">
@@ -122,26 +153,20 @@
                 <div id="videoThumbnails" class="photo-thumbnails"></div>
             </div>
             
-        </div> <div class="fixed-actions-footer">
-            <button id="attach-clip" class="clip-button" onclick="document.getElementById('file-input').click()" title="Adjuntar imagen">📎</button>
-            <input type="file" id="file-input" class="file-input" accept="image/*" multiple style="display:none;">
+            <div class="centrar">
+                <button id="save-record" onclick="saveRecord()">Guardar registro</button>
+            </div>
 
-            <button id="activate-camera-btn" class="activate-camera-button-main">
-                <i class="fas fa-camera"></i>
-            </button>
-
-            <button id="save-record" class="save-button" onclick="saveRecord()">
-                <i class="fas fa-save"></i>
-            </button>
+            <input type="hidden" id="base64-photo">
+            <div id="successMessage" style="display:none;" class="centrar"></div>
+            <div id="loading-overlay" class="loading-overlay">
+                <div class="spinner"></div>
+            </div>
         </div>
+    </div>
 
-        <input type="hidden" id="base64-photo">
-        <div id="successMessage" style="display:none;" class="centrar"></div>
-        <div id="loading-overlay" class="loading-overlay">
-            <div class="spinner"></div>
-        </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 
-    </div> <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
