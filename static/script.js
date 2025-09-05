@@ -334,6 +334,7 @@ function isIOS() {
 // =================================================================
 //          FUNCIÓN DE GUARDADO FINAL
 // =================================================================
+/*
 function saveRecord() {
     const loadingOverlay = document.getElementById('loading-overlay');
     const saveButton = document.getElementById('save-record');
@@ -356,6 +357,85 @@ function saveRecord() {
         respuestas: respuestas,
         fotos: finalPhotos,
         videos: finalVideos,
+        project_id: projectId
+    };
+
+    fetch('/guardar-registro', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(response => {
+        if (!response.ok) return response.json().then(err => { throw new Error(err.error || 'Error del servidor') });
+        return response.json();
+    })
+    .then(data => {
+        loadingOverlay.style.display = 'none';
+        alert(data.mensaje || "¡Registro guardado exitosamente!");
+        window.location.href = '/registros';
+    })
+    .catch(error => {
+        loadingOverlay.style.display = 'none';
+        saveButton.disabled = false;
+        saveButton.textContent = "Guardar registro";
+        alert(`Error: ${error.message}`);
+    });
+}*/
+function saveRecord() {
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const saveButton = document.getElementById('save-record');
+    loadingOverlay.style.display = 'flex';
+    saveButton.disabled = true;
+    saveButton.textContent = "Guardando...";
+
+    const projectId = new URLSearchParams(window.location.search).get("project_id");
+    const respuestas = {
+        zona_intervencion: document.getElementById('question_0').value,
+        items:             document.getElementById('question_1').value,
+        metros_lineales:   document.getElementById('question_2').value,
+        proximas_tareas:   document.getElementById('question_3').value
+    };
+
+    // ===================================================================
+    //            INICIO DE LA CORRECCIÓN - RECOLECCIÓN DE DATOS
+    // ===================================================================
+    // En lugar de solo filtrar, ahora recorremos cada item para buscar su descripción.
+
+    const finalPhotos = [];
+    capturedPhotos.forEach((fileData, index) => {
+        // Solo procesamos la foto si no ha sido eliminada (no es nula)
+        if (fileData !== null) {
+            // Buscamos su campo de descripción por el ID único que creamos (ej. "photo_desc_0")
+            const descriptionInput = document.getElementById(`photo_desc_${index}`);
+            
+            finalPhotos.push({
+                file_data: fileData, // El archivo en base64
+                description: descriptionInput ? descriptionInput.value : "" // El texto de la descripción
+            });
+        }
+    });
+
+    const finalVideos = [];
+    capturedVideos.forEach((fileData, index) => {
+        // Hacemos lo mismo para los videos
+        if (fileData !== null) {
+            const descriptionInput = document.getElementById(`video_desc_${index}`);
+            
+            finalVideos.push({
+                file_data: fileData, // El video en base64
+                description: descriptionInput ? descriptionInput.value : "" // Su descripción
+            });
+        }
+    });
+
+    // ===================================================================
+    //                         FIN DE LA CORRECCIÓN
+    // ===================================================================
+
+    const payload = {
+        respuestas: respuestas,
+        fotos: finalPhotos,   // Ahora es un array de objetos {file_data, description}
+        videos: finalVideos,  // Ahora es un array de objetos {file_data, description}
         project_id: projectId
     };
 

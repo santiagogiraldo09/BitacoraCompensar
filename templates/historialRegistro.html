@@ -122,18 +122,24 @@
                             <label>Evidencia:</label>
                             
                             <div class="media-gallery">
-                                {% for foto_b64 in registro.fotos %}
+                                {% for foto in registro.fotos %}
                                     <div class="media-item">
-                                        <img src="{{ foto_b64 }}" alt="Evidencia fotográfica">
+                                        <img src="{{ foto.file_data }}" alt="Evidencia fotográfica">
+                                        {% if foto.description %}
+                                            <p class="media-description">{{ foto.description }}</p>
+                                        {% endif %}
                                     </div>
                                 {% endfor %}
 
-                                {% for video_b64 in registro.videos %}
+                                {% for video in registro.videos %}
                                     <div class="media-item">
                                         <video controls playsinline preload="metadata">
-                                            <source src="{{ video_b64 }}">
+                                            <source src="{{ video.file_data }}">
                                             Tu navegador no soporta la reproducción de video.
                                         </video>
+                                        {% if video.description %}
+                                            <p class="media-description">{{ video.description }}</p>
+                                        {% endif %}
                                     </div>
                                 {% endfor %}
                             </div>

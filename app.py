@@ -111,45 +111,72 @@ def verify_user(email, password):
         if conn:
             conn.close()
 
+
 def insert_registro_bitacora(respuestas, id_proyecto, fotos=None, videos=None):
+    """
+    Inserta un nuevo registro de bitácora, junto con sus fotos y videos asociados
+    y sus descripciones, en la base de datos.
+    """
+    conn = None  # Definimos conn aquí para asegurarnos de que exista en el bloque finally
     try:
         conn = psycopg2.connect(**POSTGRES_CONFIG)
         cursor = conn.cursor()
 
+        # CAMBIO 1: Simplificamos el INSERT principal.
+        # - Eliminamos la columna 'foto_base64' que ya es obsoleta.
+        # - Cambiamos los nombres de las claves para que coincidan con tu formulario.
         cursor.execute("""
             INSERT INTO registrosbitacoraeqing (
-                zona_intervencion,
-                items,
-                metros_lineales,
-                proximas_tareas,
-                foto_base64,
+                zona_intervencion, -- Mapeado desde "Tipo de informe"
+                items,             -- Mapeado desde "Sede"
+                metros_lineales,   -- Mapeado desde "Repuestos utilizados"
+                proximas_tareas,   -- Mapeado desde "Repuestos a cotizar"
                 id_proyecto
-                
             )
-            VALUES (%s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s)
             RETURNING id_registro
         """, (
             respuestas.get('zona_intervencion'),
             respuestas.get('items'),
             respuestas.get('metros_lineales'),
             respuestas.get('proximas_tareas'),
-            respuestas.get('foto_base64'),
-            id_proyecto,          
+            id_proyecto,
         ))
         id_registro = cursor.fetchone()[0]
 
-        # Insertar fotos si hay
-        for foto in fotos or []:
-            cursor.execute("INSERT INTO fotos_registro (id_registro, imagen_base64) VALUES (%s, %s)", (id_registro, foto))
+        # CAMBIO 2: Actualizamos el bucle para que maneje objetos (archivo + descripción).
+        # Ahora esperamos una lista de diccionarios, no solo una lista de strings.
+        for foto_obj in fotos or []:
+            file_data = foto_obj.get('file_data')
+            description = foto_obj.get('description')
+            cursor.execute(
+                """INSERT INTO fotos_registro 
+                   (id_registro, imagen_base64, description) 
+                   VALUES (%s, %s, %s)""",
+                (id_registro, file_data, description)
+            )
 
-        # Insertar videos si hay
-        for video in videos or []:
-            cursor.execute("INSERT INTO videos_registro (id_registro, video_base64) VALUES (%s, %s)", (id_registro, video))
+        # CAMBIO 3: Hacemos lo mismo para los videos.
+        for video_obj in videos or []:
+            file_data = video_obj.get('file_data')
+            description = video_obj.get('description')
+            cursor.execute(
+                """INSERT INTO videos_registro 
+                   (id_registro, video_base64, description) 
+                   VALUES (%s, %s, %s)""",
+                (id_registro, file_data, description)
+            )
 
         conn.commit()
-        print("Registro guardado en PostgreSQL.")
+        print(f"Registro {id_registro} guardado exitosamente en PostgreSQL.")
+
+    except psycopg2.Error as e: # MEJORA: Capturamos el error específico de psycopg2 para más detalles
+        print(f"Error de base de datos al guardar en PostgreSQL: {e}")
+        # Opcional: podrías querer que la función devuelva un error
+        # raise e 
     except Exception as e:
-        print(f"Error al guardar en PostgreSQL: {str(e)}")
+        print(f"Error general al guardar en PostgreSQL: {str(e)}")
+        # raise e
     finally:
         if conn:
             conn.close()
@@ -401,9 +428,10 @@ def usuario():
 def inventario():
     return render_template('inventario.html')
 
+# En tu archivo app.py
+
 @app.route('/historialRegistro')
 def historialregistro():
-    # Obtener el ID del proyecto desde los parámetros de la URL
     project_id = request.args.get('project_id')
     project_name = request.args.get('project_name', 'Proyecto')
     
@@ -411,64 +439,67 @@ def historialregistro():
         flash("No se proporcionó el ID del proyecto", "error")
         return redirect(url_for('history'))
 
-    # Aquí puedes agregar lógica para obtener registros reales de la base de datos
-    # Por ahora usaremos los datos quemados como solicitaste
-    
-    # Datos quemados de ejemplo (2 registros)
     registros = []
+    conn = None
     try:
         conn = psycopg2.connect(**POSTGRES_CONFIG)
         cursor = conn.cursor()
 
+        # 1. Obtener los registros principales (sin cambios aquí)
         cursor.execute("""
-            SELECT id_registro, zona_intervencion, items, metros_lineales, proximas_tareas, foto_base64
+            SELECT id_registro, zona_intervencion, items, metros_lineales, proximas_tareas
             FROM registrosbitacoraeqing
             WHERE id_proyecto = %s
             ORDER BY id_registro DESC
         """, (project_id,))
-
+        
         registros_principales = cursor.fetchall()
 
+        # 2. Para cada registro, obtener sus fotos y videos CON SUS DESCRIPCIONES
         for row in registros_principales:
             id_registro = row[0]
             
-            # Obtener todas las fotos de la tabla 'fotos_registro'
-            cursor.execute("SELECT imagen_base64 FROM fotos_registro WHERE id_registro = %s", (id_registro,))
-            fotos = [item[0] for item in cursor.fetchall()]
+            # --- LÓGICA DE FOTOS ACTUALIZADA ---
+            # Ahora seleccionamos también la columna 'description'
+            cursor.execute("SELECT imagen_base64, description FROM fotos_registro WHERE id_registro = %s", (id_registro,))
+            fotos = []
+            for item in cursor.fetchall():
+                fotos.append({
+                    'file_data': item[0],   # El archivo en base64
+                    'description': item[1]  # La nueva descripción
+                })
             
-            # Obtener todos los videos de la tabla 'videos_registro'
-            cursor.execute("SELECT video_base64 FROM videos_registro WHERE id_registro = %s", (id_registro,))
-            videos = [item[0] for item in cursor.fetchall()]
+            # --- LÓGICA DE VIDEOS ACTUALIZADA ---
+            # Hacemos lo mismo para los videos
+            cursor.execute("SELECT video_base64, description FROM videos_registro WHERE id_registro = %s", (id_registro,))
+            videos = []
+            for item in cursor.fetchall():
+                videos.append({
+                    'file_data': item[0],   # El video en base64
+                    'description': item[1]  # La nueva descripción
+                })
 
-            # Añadir todo a la lista de registros que se enviará al frontend
             registros.append({
                 'id': id_registro,
                 'zona_intervencion': row[1],
                 'items_value': row[2],
                 'metros_lineales': row[3],
                 'proximas_tareas': row[4],
-                'fotos': fotos,   # <-- Lista con todas las fotos
-                'videos': videos  # <-- Lista con todos los videos
+                'fotos': fotos,   # Ahora es una lista de objetos
+                'videos': videos  # Ahora es una lista de objetos
             })
-            
-            #registros.append({
-                #'id': row[0],
-                #'zona_intervencion': row[1],
-                #'items_value': row[2],
-                #'metros_lineales': row[3],
-                #'proximas_tareas': row[4],
-                #'foto_base64': row[5],
-            #})
+
     except Exception as e:
         print(f"Error al obtener registros: {str(e)}")
+        flash("Error al cargar el historial de registros.", "error")
     finally:
         if conn:
             conn.close()
     
     return render_template('historialRegistro.html',
-                         registros=registros,
-                         project_name=project_name,
-                         project_id=project_id)
+                           registros=registros,
+                           project_name=project_name,
+                           project_id=project_id)
 
 @app.route('/disciplinerecords')
 def disciplinerecords():
