@@ -272,10 +272,11 @@ function saveRecord() {
 
     const projectId = new URLSearchParams(window.location.search).get("project_id");
     const respuestas = {
-        tipo_informe: document.getElementById('question_0').value,
-        sede: document.getElementById('question_1').value,
-        repuestos_utilizados: document.getElementById('question_2').value,
-        repuestos_cotizar: document.getElementById('question_3').value,
+        // Clave que Python espera  <-- Valor del campo en HTML
+        zona_intervencion: document.getElementById('question_0').value, // Corresponde a "Tipo de informe"
+        items:             document.getElementById('question_1').value, // Corresponde a "Sede"
+        metros_lineales:   document.getElementById('question_2').value, // Corresponde a "Repuestos utilizados"
+        proximas_tareas:   document.getElementById('question_3').value  // Corresponde a "Repuestos a cotizar"
     };
     const finalPhotos = capturedPhotos.filter(p => p !== null);
     const finalVideos = capturedVideos.filter(v => v !== null);
