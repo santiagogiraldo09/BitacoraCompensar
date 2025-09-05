@@ -19,26 +19,6 @@ body {
     background-color: white;
 }
 
-/* ¡LA PARTE CLAVE! El contenido del formulario ahora es la zona de scroll */
-.scrollable-content {
-    flex-grow: 1; /* Ocupa todo el espacio disponible */
-    overflow-y: auto; /* Permite el scroll vertical */
-    padding: 20px;
-    padding-bottom: 80px; /* IMPORTANTE: Añade espacio al final para que el último elemento no quede oculto detrás de la barra de acciones */
-}
-
-/* --- NUEVA BARRA DE ACCIONES FIJA --- */
-.fixed-actions-footer {
-    flex-shrink: 0; /* No se encoge */
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 10px 0;
-    background-color: #ffffff;
-    border-top: 1px solid #e9ecef;
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.08);
-}
-
 header {
     text-align: center;
     margin-bottom: 20px;
