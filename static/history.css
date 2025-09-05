@@ -1,155 +1,274 @@
-/* ================================================================== */
-/* ARCHIVO history.css - VERSIÓN FINAL Y CORREGIDA           */
-/* ================================================================== */
-
-/* --- 1. Configuración General del Layout --- */
-html, body {
-    height: 100%;
+/* Configuración general */
+body, html {
     margin: 0;
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
-    overflow: hidden; /* Muy importante: evita el scroll en la página principal */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
 }
 
-/* El Contenedor Principal que ordena todo */
+/* Contenedor principal */
 .main-container {
-    width: 100%;
-    max-width: 450px;
+    width: 80vw;
+    max-width: 400px;
     height: 100vh;
-    margin: 0 auto;
-    background-color: #ffffff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    
     display: flex;
     flex-direction: column;
-}
-
-/* --- ZONA 1: Encabezado Fijo --- */
-.page-header {
-    flex-shrink: 0; /* Evita que el encabezado se encoja */
-    padding: 15px;
-    border-bottom: 1px solid #e9ecef;
+    justify-content: space-between;
     background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
+/* Contenedor de contenido (todo excepto el menú inferior) */
+.content-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Evita que este contenedor genere scroll */
+}
+
+/* Lista de proyectos - AHORA CON SCROLL INTERNO */
+.records-container {
+    flex: 1;
+    
+    overflow-y: auto;
+    list-style-type: none;
+    padding: 10px;
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+/* Espacio para el logo */
 .logo-container {
-    text-align: center;
-    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
 }
 
 .logo {
-    max-width: 180px;
+    max-width: 250px;
     height: auto;
 }
 
-.intro-text h2 {
-    text-align: center;
-    font-size: 1.25rem;
-    color: #343a40;
-    margin: 0 0 15px 0;
+/* Botón de agregar proyecto */
+.add-project-container {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
 }
 
-.actions-bar {
+.add-project-button {
+    background-color: #28a745;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.add-project-button:hover {
+    background-color: #218838;
+}
+
+/* Texto de introducción */
+.intro-text {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.intro-text h2 {
+    font-size: 20px;
+    color: #000000;
+}
+
+/* Lista de proyectos */
+.records-container {
+    list-style-type: none;
+    flex: 1;
+    overflow-y: auto; /* Agregar scroll vertical */
+    padding: 10px;
+    margin-bottom: 70px; /* Espacio para el menú inferior */
+}
+
+.record-item {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
     display: flex;
     justify-content: space-between;
-    align-items: center;
 }
 
-.action-button {
-    background-color: #FF6600;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.875rem;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: background-color 0.2s;
-}
-.action-button:hover {
-    background-color: #e65c00;
+.record-item:hover {
+    background-color: #f2f2f2;
 }
 
-/* --- ZONA 2: Contenido con Scroll --- */
-.records-container {
-    flex-grow: 1; /* ¡LA MAGIA! Hace que esta zona ocupe todo el espacio sobrante */
-    overflow-y: auto; /* Muestra el scroll SÓLO AQUÍ cuando sea necesario */
-    padding: 20px;
-    background-color: #f8f9fa;
-}
-
-.record-details {
-    background-color: #ffffff;
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 15px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    border: 1px solid #dee2e6;
-}
-.record-details h3 {
-    margin-top: 0;
-    font-size: 1rem;
-    color: #495057;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 8px;
-    margin-bottom: 12px;
-}
-.record-field {
-    margin-bottom: 8px;
-    font-size: 0.875rem;
-}
-.record-field label {
-    font-weight: bold;
-    margin-right: 5px;
-    color: #212529;
-}
-
-.evidencia-container {
-    margin-top: 15px;
-    padding-top: 10px;
-    border-top: 1px solid #e9ecef;
-}
-.media-gallery {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 5px;
-}
-.media-item img,
-.media-item video {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 5px;
-}
-.no-records-message, .no-media-message {
-    text-align: center;
-    color: #6c757d;
-    padding: 20px 0;
-}
-
-/* --- ZONA 3: Pie de Página Fijo --- */
+/* Menú inferior */
 .bottom-menu {
-    flex-shrink: 0; /* Evita que el pie de página se encoja */
-    display: flex;
+    /*display: flex;
     justify-content: space-around;
     padding: 10px;
-    background-color: #ffffff;
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.08);
+    background-color: #f3f3f3;*/
+    display: flex;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-around;
+    /*box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);*/
+    z-index: 100; /* Asegurar que esté por encima de otros elementos */
 }
+
 .bottom-button {
-    background-color: transparent;
-    color: #FF6600;
+    background-color: #FF6600;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 10px;
     border: none;
     cursor: pointer;
-    font-size: 28px;
-    padding: 5px 15px;
-    border-radius: 8px;
-    transition: background-color 0.2s;
+    font-size: 20px;
 }
+
+.bottom-button .icon {
+    max-width: 50px; /* Tamaño del logo de registros */
+    height: auto;
+}
+
+.bottom-button i {
+    font-size: 24px;  /* Tamaño del icono */
+}
+
 .bottom-button:hover {
-    background-color: #fdf0e6;
+    background-color: #FF6600;
+}
+
+/* Botón de agregar nuevo proyecto */
+.add-project-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.add-project-button {
+    background-color: #FF6600;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.add-project-button:hover {
+    background-color: #FF6600;
+}
+
+/* Ajustes responsivos para los botones */
+@media screen and (max-width: 480px) {
+    .bottom-button {
+        font-size: 18px;  /* Reducir tamaño de icono en pantallas pequeñas */
+        padding: 8px 10px;
+    }
+
+    .bottom-button i {
+        font-size: 20px;
+    }
+}
+
+/* Estilo del contenedor desplegable */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Estilo del menú desplegable */
+.dropdown-menu {
+    display: none; /* Oculto por defecto */
+    position: absolute;
+    bottom: 50px; /* Aparece encima del botón */
+    left: 0;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 10px 0;
+    z-index: 1000;
+    min-width: 150px;
+    text-align: center;
+}
+
+/* Opciones del menú */
+.dropdown-item {
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #34495e;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.dropdown-item:hover {
+    background-color: #FF6600;
+    color: #fff;
+}
+
+/* Mostrar menú cuando está activo */
+.dropdown-menu.show {
+    display: block;
+}
+
+/* Botones de proyectos */
+.records-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 10px;
+}
+
+.record-button {
+    background-color: #ffffff;
+    color: #34495e;
+    text-align: left;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.record-button small {
+    display: block;
+    font-size: 14px;
+    color: #7f8c8d;
+    margin-top: 0px;
+}
+
+.record-button:hover {
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#project-records {
+    /* 1. Le damos una altura máxima. 
+       Puedes ajustar este valor. 60vh significa 60% de la altura de la pantalla del dispositivo. 
+       Es un buen punto de partida para móviles. */
+    max-height: 60vh;
+
+    /* 2. Le decimos que muestre una barra de scroll si el contenido se pasa de esa altura. */
+    overflow-y: auto;
+
+    /* (Opcional) Un pequeño borde para que veas claramente el contenedor mientras pruebas */
+    border: 1px solid rgb(255, 255, 255); 
 }
