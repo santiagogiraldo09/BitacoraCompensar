@@ -229,6 +229,15 @@ button {
     /* ... mantén cualquier otro estilo importante que tuvieras aquí ... */
 }
 
+#gallery-container {
+    display: contents; /* Convertimos el contenedor principal de la galería en flex */
+    flex-wrap: wrap; /* Permite que las miniaturas salten a la siguiente línea si no caben */
+    justify-content: center; /* ESTO ES LO CLAVE: Centra las miniaturas como grupo */
+    gap: 20px; /* Espacio entre cada miniatura */
+    margin-top: 20px;
+    padding: 10px;
+}
+
 /* Botón redondo para "Tomar foto" */
 .round-button {
     width: 60px;
