@@ -9,17 +9,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
     .photo-thumbnail-wrapper {
-        display: inline-block;
-        text-align: center;
-        width: 200px;
+        display: flex; /* 1. Cambiamos a Flexbox */
+        flex-direction: column; /* 2. Apilamos los elementos internos verticalmente */
+        align-items: center; /* 3. Centramos los elementos internos horizontalmente (en el eje cruzado) */
+        justify-content: center; /* Opcional: Centra verticalmente si hay espacio extra */
+        width: 200px; /* Mantener el ancho fijo */
         margin-top: 10px;
+        border: 1px solid #ddd; /* Añadir un borde sutil para visualización */
+        border-radius: 8px; /* Bordes redondeados */
+        padding: 5px; /* Pequeño relleno interno */
+        background-color: #f9f9f9; /* Fondo claro */
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra suave */
     }
 
     .thumbnail-image {
-        width: 100%;
-        height: auto;
-        border: 1px solid #ccc;
-        border-radius: 4px;
+        width: 100%; /* Ocupa todo el ancho disponible del wrapper */
+        height: 150px; /* Establece una altura fija para todas las miniaturas */
+        object-fit: cover; /* Recorta la imagen/video para cubrir el espacio sin distorsión */
+        border-radius: 4px; /* Un poco de borde redondeado para la imagen/video */
+        margin-bottom: 5px; /* Espacio entre la imagen/video y los botones de control */
     }
 
     .photo-controls {
