@@ -579,7 +579,7 @@ def guardar_registro():
         # Guardar en PostgreSQL
         insert_registro_bitacora(respuestas, int(project_id), fotos, videos)
 
-        return jsonify({"mensaje": "Registro guardado exitosamente en PostgreSQL."}), 200
+        return jsonify({"mensaje": "Registro guardado exitosamente!!"}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
