@@ -10,13 +10,43 @@ body {
     height: 100vh;
 }
 
+/* Hacemos que el contenedor principal de la app ocupe toda la pantalla */
 #app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-height: 100vh; /* Para iOS */
     width: 100%;
-    max-width: 400px; /* Mantener el tamaño para simular un celular */
+    max-width: 450px;
+    margin: 0 auto;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* El header se queda fijo arriba */
+#app > header {
+    flex-shrink: 0;
+    /* ... tus estilos de header existentes ... */
+}
+
+/* ¡LA PARTE CLAVE! El contenido del formulario ahora es la zona de scroll */
+.scrollable-content {
+    flex-grow: 1; /* Ocupa todo el espacio disponible */
+    overflow-y: auto; /* Permite el scroll vertical */
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    background-color: white;
+    padding-bottom: 80px; /* IMPORTANTE: Añade espacio al final para que el último elemento no quede oculto detrás de la barra de acciones */
+}
+
+/* --- NUEVA BARRA DE ACCIONES FIJA --- */
+.fixed-actions-footer {
+    flex-shrink: 0; /* No se encoge */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 0;
+    background-color: #ffffff;
+    border-top: 1px solid #e9ecef;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.08);
 }
 
 header {
