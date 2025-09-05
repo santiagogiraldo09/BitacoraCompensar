@@ -106,7 +106,7 @@ input[type="file"] {
 }
 
 .submit-button {
-    background-color: #f8b126;
+    background-color: #FF6600;
     color: white;
     padding: 10px;
     border: none;
@@ -116,7 +116,7 @@ input[type="file"] {
 }
 
 .submit-button:hover {
-    background-color: #f3bd65;
+    background-color: #FF6600;
 }
 
 /* Menú inferior */
@@ -127,7 +127,7 @@ input[type="file"] {
     background-color: #ffffff;
 }
 .bottom-button {
-    background-color: #f3bd65;
+    background-color: #FF6600;
     color: white;
     padding: 10px 15px;
     border-radius: 10px;
@@ -147,7 +147,7 @@ input[type="file"] {
 }
 
 .bottom-button:hover {
-    background-color: #d9961e
+    background-color: #FF6600
 }
 
 /* Ajustes responsivos para los botones */
