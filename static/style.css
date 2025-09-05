@@ -219,6 +219,16 @@ button {
     transition: background-color 0.3s;
 }
 
+.action-buttons-wrapper {
+    display: contents; /* Aseguramos que sea flex */
+    justify-content: center; /* ESTO ES LO CLAVE: Centra los elementos horizontalmente */
+    align-items: center; /* Opcional: Centra verticalmente si los botones tuvieran diferente altura */
+    width: 100%; /* Asegura que ocupe todo el ancho para que el centrado funcione */
+    margin-top: 10px;
+    gap: 15px; /* Agrega espacio entre los botones (opcional, pero mejora la estética) */
+    /* ... mantén cualquier otro estilo importante que tuvieras aquí ... */
+}
+
 /* Botón redondo para "Tomar foto" */
 .round-button {
     width: 60px;
