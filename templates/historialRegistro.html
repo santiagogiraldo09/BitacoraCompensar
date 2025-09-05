@@ -71,35 +71,34 @@
 </head>
 <body>
     <div class="main-container">
-        <div class="logo-container">
-            <img src="{{ url_for('static', filename='logocompensar.png') }}" alt="Logo" class="logo">
-        </div>
 
-        <div class="intro-text">
-            <h2>Historial de Registros</h2>
-        </div>
+        <header class="page-header">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='logocompensar.png') }}" alt="Logo" class="logo">
+            </div>
+            <div class="intro-text">
+                <h2>Historial de Registros para {{ project_name }}</h2>
+            </div>
+            <div class="actions-bar">
+                <button class="back-button" onclick="window.location.href='{{ url_for('history') }}'">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+                <form id="export-form-header" method="POST" action="/exportar-registros-excel">
+                    <input type="hidden" name="project_id" value="{{ project_id }}">
+                    <button type="submit" class="export-button">
+                        <i class="fas fa-file-excel"></i> Exportar Todo
+                    </button>
+                </form>
+            </div>
+        </header>
 
-        <div class="centrar">
-            <button class="back-button" onclick="window.location.href='{{ url_for('history') }}'">
-                <i class="fas fa-arrow-left"></i> Volver al historial
-            </button>
-        </div>
-
-        <div class="centrar" style="margin-bottom: 15px;">
-            <label><input type="checkbox" id="select-all"> Seleccionar todos</label>
-            <button type="submit" class="back-button" style="margin-left: 10px;">
-                <i class="fas fa-file-excel"></i> Exportar registros seleccionados a Excel
-            </button>
-        </div>
-
-        <div id="project-records" class="records-container">
-            <form id="export-form" method="POST" action="/exportar-registros-excel">
+        <main class="records-container">
+            <form id="export-form-list" method="POST" action="/exportar-registros-excel">
                 <input type="hidden" name="project_id" value="{{ project_id }}">
-
+                
                 {% if registros %}
                     {% for registro in registros %}
                     <div class="record-details">
-                        <input type="checkbox" name="registro_ids" value="{{ registro.id }}" class="registro-checkbox">
                         <h3>Código de registro: {{ registro.id }}</h3>
                         <div class="record-field">
                             <label>Tipo de informe:</label>
@@ -120,47 +119,46 @@
 
                         <div class="evidencia-container">
                             <label>Evidencia:</label>
-                            
                             <div class="media-gallery">
                                 {% for foto_b64 in registro.fotos %}
                                     <div class="media-item">
                                         <img src="{{ foto_b64 }}" alt="Evidencia fotográfica">
                                     </div>
                                 {% endfor %}
-
                                 {% for video_b64 in registro.videos %}
                                     <div class="media-item">
                                         <video controls playsinline preload="metadata">
                                             <source src="{{ video_b64 }}">
-                                            Tu navegador no soporta la reproducción de video.
+                                            Tu navegador no soporta video.
                                         </video>
                                     </div>
                                 {% endfor %}
                             </div>
-                            
                             {% if not registro.fotos and not registro.videos %}
-                                <p><small>No hay evidencia multimedia para este registro.</small></p>
+                                <p><small>No hay evidencia multimedia.</small></p>
                             {% endif %}
                         </div>
                     </div>
                     {% endfor %}
                 {% else %}
-                    <p>No hay registros para este proyecto</p>
+                    <p class="no-records-message">No hay registros para este proyecto.</p>
                 {% endif %}
             </form>
+        </main>
 
-            <script>
-                // Seleccionar todos los registros
-                document.getElementById('select-all').addEventListener('change', function () {
-                    const checkboxes = document.querySelectorAll('.registro-checkbox');
-                    checkboxes.forEach(cb => cb.checked = this.checked);
-                });
-            </script>
-        </div>
-
-        <div class="bottom-menu">
+        <footer class="bottom-menu">
             <a href="{{ url_for('registros') }}" class="bottom-button"><i class="fas fa-home"></i></a>
-        </div>
+        </footer>
+
     </div>
+
+        <script>
+            // Seleccionar todos los registros
+            document.getElementById('select-all').addEventListener('change', function () {
+                const checkboxes = document.querySelectorAll('.registro-checkbox');
+                checkboxes.forEach(cb => cb.checked = this.checked);
+            });
+        </script>
+        </div>
 </body>
 </html>
