@@ -353,3 +353,27 @@ button {
 .stop-btn:hover {
     background-color: #c0392b;
 }
+
+/* Hacemos que el contenedor del formulario sea el layout principal */
+#form-container {
+    display: flex;
+    flex-direction: column;
+    /* Hacemos que ocupe la altura disponible restando el header */
+    /* 'calc' es una función de CSS que realiza cálculos */
+    height: calc(100vh - 200px); /* Ajusta 200px si tu header es más alto o bajo */
+    max-height: calc(100vh - 200px);
+}
+
+/* La nueva sección para los campos de texto */
+.form-inputs-section {
+    flex-shrink: 0; /* Evita que esta sección se encoja */
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* La nueva sección para las acciones, que tendrá el scroll */
+.form-actions-section {
+    flex-grow: 1; /* ¡LA MAGIA! Hace que esta zona ocupe todo el espacio sobrante */
+    overflow-y: auto; /* Muestra el scroll SÓLO AQUÍ cuando sea necesario */
+    padding-top: 15px;
+}
