@@ -218,6 +218,7 @@ function transcribeAudio(audioBlob) {
 // =================================================================
 //          FUNCIONES DE MINIATURAS Y AYUDA
 // =================================================================
+/*
 function addPhotoThumbnail(base64String, index) {
     const container = document.getElementById('photoThumbnails');
     const thumbWrapper = document.createElement('div');
@@ -229,6 +230,40 @@ function addPhotoThumbnail(base64String, index) {
             <button class="photo-button" onclick="deletePhoto(${index})" title="Eliminar foto">❌</button>
         </div>`;
     container.appendChild(thumbWrapper);
+}*/
+function addPhotoThumbnail(base64String, index) {
+    const container = document.getElementById('photoThumbnails');
+    const thumbWrapper = document.createElement('div');
+    thumbWrapper.className = 'photo-thumbnail-wrapper';
+    thumbWrapper.setAttribute('data-index', index);
+    
+    // Creamos un ID único para el nuevo campo de texto y sus botones
+    const descriptionInputId = `photo_desc_${index}`;
+
+    thumbWrapper.innerHTML = `
+        <img src="${base64String}" class="thumbnail-image">
+        
+        <div class="thumbnail-description-box">
+            <input type="text" id="${descriptionInputId}" class="thumbnail-input" placeholder="Describe la foto...">
+            <button class="record-btn" data-target-input="${descriptionInputId}" title="Grabar descripción">
+                <i class="fas fa-microphone"></i>
+            </button>
+            <button class="stop-btn" data-target-input="${descriptionInputId}" title="Detener grabación" style="display: none;">
+                <i class="fas fa-stop"></i>
+            </button>
+        </div>
+
+        <div class="photo-controls">
+            <button class="photo-button" onclick="deletePhoto(${index})" title="Eliminar foto">❌</button>
+        </div>`;
+    
+    container.appendChild(thumbWrapper);
+
+    // IMPORTANTE: Le damos funcionalidad a los NUEVOS botones de micrófono que acabamos de crear
+    const newRecordBtn = thumbWrapper.querySelector('.record-btn');
+    const newStopBtn = thumbWrapper.querySelector('.stop-btn');
+    newRecordBtn.addEventListener('click', () => startFieldRecording(newRecordBtn));
+    newStopBtn.addEventListener('click', stopFieldRecording);
 }
 
 function deletePhoto(index) {
@@ -237,6 +272,7 @@ function deletePhoto(index) {
     if (thumbnailToRemove) thumbnailToRemove.remove();
 }
 
+/*
 function addVideoThumbnail(base64String, index) {
     const container = document.getElementById('videoThumbnails');
     const thumbWrapper = document.createElement('div');
@@ -248,6 +284,41 @@ function addVideoThumbnail(base64String, index) {
             <button class="photo-button" onclick="deleteVideo(${index})">❌</button>
         </div>`;
     container.appendChild(thumbWrapper);
+}*/
+
+function addVideoThumbnail(base64String, index) {
+    const container = document.getElementById('videoThumbnails');
+    const thumbWrapper = document.createElement('div');
+    thumbWrapper.className = 'photo-thumbnail-wrapper';
+    thumbWrapper.setAttribute('data-video-index', index);
+
+    // Creamos un ID único para el nuevo campo de texto y sus botones
+    const descriptionInputId = `video_desc_${index}`;
+
+    thumbWrapper.innerHTML = `
+        <video src="${base64String}" class="thumbnail-image" controls playsinline></video>
+        
+        <div class="thumbnail-description-box">
+            <input type="text" id="${descriptionInputId}" class="thumbnail-input" placeholder="Describe el video...">
+            <button class="record-btn" data-target-input="${descriptionInputId}" title="Grabar descripción">
+                <i class="fas fa-microphone"></i>
+            </button>
+            <button class="stop-btn" data-target-input="${descriptionInputId}" title="Detener grabación" style="display: none;">
+                <i class="fas fa-stop"></i>
+            </button>
+        </div>
+
+        <div class="photo-controls">
+            <button class="photo-button" onclick="deleteVideo(${index})">❌</button>
+        </div>`;
+
+    container.appendChild(thumbWrapper);
+
+    // IMPORTANTE: Le damos funcionalidad a los NUEVOS botones de micrófono que acabamos de crear
+    const newRecordBtn = thumbWrapper.querySelector('.record-btn');
+    const newStopBtn = thumbWrapper.querySelector('.stop-btn');
+    newRecordBtn.addEventListener('click', () => startFieldRecording(newRecordBtn));
+    newStopBtn.addEventListener('click', stopFieldRecording);
 }
 
 function deleteVideo(index) {
